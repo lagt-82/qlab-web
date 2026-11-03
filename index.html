@@ -106,6 +106,19 @@ legend{font-size:12px;font-weight:600;padding:0;margin-bottom:4px}
 
 .lead{margin:6px 0 8px;font-size:14px;color:var(--muted);max-width:60ch}
 
+.calc-top{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:end;margin-bottom:12px}
+.calc .field select{width:5.5em;background:var(--surface);border:1px solid var(--grid-strong);border-radius:4px;padding:5px 6px;font-family:var(--f-mono);font-size:13px;color:var(--ink)}
+.calc-res .v{font-family:var(--f-display);font-size:26px;font-weight:600;line-height:1.1}
+.calc-res .s{font-size:12px;color:var(--muted)}
+.calc-wrap{overflow-x:auto}
+.calc-t{border-collapse:separate;border-spacing:3px;font-size:12px}
+.calc-t th{font-weight:600;color:var(--muted);padding:3px 5px;white-space:nowrap;text-align:center}
+.calc-t td{padding:0}
+.calc-c{min-width:4.2rem;min-height:2.6rem;width:100%;padding:3px 5px;border:1.5px solid var(--grid);background:var(--surface);border-radius:3px;cursor:pointer;font-family:var(--f-mono);font-size:12px;line-height:1.25}
+.calc-c small{display:block;color:var(--muted);font-size:10px}
+.calc-c.on{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.calc-c.on small{color:var(--paper)}
+
 /* Reparto por presupuesto */
 .budget{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
 #b-eur{width:5.5em;background:var(--surface);border:1px solid var(--grid-strong);border-radius:4px;padding:5px 6px;font-family:var(--f-mono)}
@@ -237,6 +250,18 @@ h2{font-family:var(--f-display);font-size:24px;font-weight:700;text-transform:up
     </details>
     <p class="alloc-msg" id="allocmsg" aria-live="polite"></p>
     <textarea id="copyout" hidden readonly aria-label="Texto del boleto"></textarea>
+  </section>
+
+  <section class="panel calc" aria-labelledby="calc-h">
+    <h2 id="calc-h">Calculadora de dobles y triples</h2>
+    <p class="sub">Cada doble multiplica las apuestas por 2 y cada triple, por 3. Elige una combinación o pulsa una casilla de la tabla.</p>
+    <div class="calc-top">
+      <label class="field" for="c-tri">Triples<select id="c-tri"></select></label>
+      <label class="field" for="c-dob">Dobles<select id="c-dob"></select></label>
+      <div class="calc-res" aria-live="polite"><div class="v" id="c-bets"></div><div class="s" id="c-det"></div></div>
+      <button class="btn primary" id="c-apply">Aplicar al boleto</button>
+    </div>
+    <div class="calc-wrap"><table class="calc-t" id="c-table"></table></div>
   </section>
 
   <section class="panel sync" id="sync" aria-labelledby="sync-h" hidden>
@@ -503,6 +528,7 @@ function update(){
   if(empty){$('st-bets').textContent='—';$('st-cost').textContent='—';$('st-mix').textContent=`faltan ${empty} partido${empty>1?'s':''}`}
   else{$('st-bets').textContent=nf(bets);$('st-cost').textContent=nf(bets*price,2)+' €';$('st-mix').textContent=`${tri} triple${tri!==1?'s':''} · ${dob} doble${dob!==1?'s':''}`}
   $('st-price').textContent=nf(price,2)+' € por apuesta';
+  if(typeof renderCalc==='function'&&$('c-tri').value!=='')renderCalc();
   const p14=empty?0:covs.reduce((a,b)=>a*b,1);
   $('st-p14').textContent=empty?'—':oneIn(p14).replace('1 entre ','1/');
   $('st-p10').textContent=empty?'marca todos los partidos':nf(atLeast(10)*100,1)+'% de 10 o más';
@@ -567,6 +593,21 @@ function allocate(sorted,maxBets,goal){
   }
   return best;
 }
+/* Calculadora de dobles y triples */
+const CALC_T=[0,1,2,3,4,5,6],CALC_D=[0,1,2,3,4,5,6,7,8];
+const euros=x=>nf(x,2)+' €';
+function renderCalc(){
+  const price=+S.params.price||0,t=+$('c-tri').value||0,d=+$('c-dob').value||0,b=Math.pow(3,t)*Math.pow(2,d);
+  $('c-bets').textContent=nf(b)+(b===1?' apuesta':' apuestas')+' · '+euros(b*price);
+  $('c-det').textContent=`3^${t} × 2^${d} = ${nf(b)} · ${t+d} de 14 partidos con varios signos · ${euros(price)} por apuesta`;
+  $('c-table').innerHTML='<thead><tr><th scope="col">Triples \\ Dobles</th>'+CALC_D.map(x=>`<th scope="col">${x}</th>`).join('')+'</tr></thead><tbody>'+CALC_T.map(tt=>`<tr><th scope="row">${tt}</th>`+CALC_D.map(dd=>{const n=Math.pow(3,tt)*Math.pow(2,dd),on=tt===t&&dd===d;return `<td><button class="calc-c${on?' on':''}" data-t="${tt}" data-d="${dd}" aria-pressed="${on}" aria-label="${tt} triples y ${dd} dobles: ${n} apuestas, ${euros(n*price)}">${nf(n)}<small>${euros(n*price)}</small></button></td>`}).join('')+'</tr>').join('')+'</tbody>';
+}
+$('c-tri').innerHTML=CALC_T.map(x=>`<option>${x}</option>`).join('');
+$('c-dob').innerHTML=CALC_D.map(x=>`<option>${x}</option>`).join('');
+$('c-tri').value='1';$('c-dob').value='1';
+$('c-tri').addEventListener('change',renderCalc);$('c-dob').addEventListener('change',renderCalc);
+$('c-table').addEventListener('click',e=>{const c=e.target.closest('[data-t]');if(!c)return;$('c-tri').value=c.dataset.t;$('c-dob').value=c.dataset.d;renderCalc()});
+$('c-apply').addEventListener('click',()=>{suggest(+$('c-tri').value,+$('c-dob').value);save();update();toast('Dobles y triples aplicados')});
 let undoSel=null;
 function allocMsg(t,err){$('allocmsg').textContent=t;$('allocmsg').classList.toggle('err',!!err)}
 $('b-alloc').addEventListener('click',()=>{

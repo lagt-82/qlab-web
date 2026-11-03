@@ -4,6 +4,8 @@ Herramienta web gratuita para preparar el boleto de La Quiniela: probabilidades 
 
 ## Cómo usarla
 
+Para verla sin registrarte, pulsa "Ver ejemplo": usa equipos y cuotas inventados.
+
 1. Regístrate gratis en [The Odds API](https://the-odds-api.com/) (plan Starter) y copia tu clave.
 2. Abre la web y pégala en "Tu clave de API".
 3. Busca los partidos y elige los 15 del boleto, en orden. Compruébalos con el boleto oficial.
@@ -11,7 +13,7 @@ Herramienta web gratuita para preparar el boleto de La Quiniela: probabilidades 
 
 ## Privacidad
 
-La web no tiene servidor, cuentas ni cookies. La clave y los signos se guardan en tu navegador. Las consultas van directamente de tu navegador a The Odds API.
+La web no tiene servidor propio ni cuentas. Las visitas se cuentan de forma agregada con Cloudflare Web Analytics. La clave y los signos se guardan en tu navegador. Las consultas van directamente de tu navegador a The Odds API.
 
 ## Aviso
 

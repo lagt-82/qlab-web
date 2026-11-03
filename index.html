@@ -119,6 +119,8 @@ legend{font-size:12px;font-weight:600;padding:0;margin-bottom:4px}
 .calc-c.on{border-color:var(--ink);background:var(--ink);color:var(--paper)}
 .calc-c.on small{color:var(--paper)}
 
+.demo-note{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:12px 14px;border:1.5px solid var(--c1);border-radius:6px;font-size:14px;background:var(--surface)}
+
 /* Reparto por presupuesto */
 .budget{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
 #b-eur{width:5.5em;background:var(--surface);border:1px solid var(--grid-strong);border-radius:4px;padding:5px 6px;font-family:var(--f-mono)}
@@ -252,6 +254,16 @@ h2{font-family:var(--f-display);font-size:24px;font-weight:700;text-transform:up
     <textarea id="copyout" hidden readonly aria-label="Texto del boleto"></textarea>
   </section>
 
+  <section class="panel start" id="startbox" hidden>
+    <h2>Pruébala sin registrarte</h2>
+    <p class="sub">Mira cómo funciona con una jornada de ejemplo, con equipos y cuotas inventados. Cuando quieras usar partidos reales, necesitarás una clave gratuita de The Odds API.</p>
+    <button class="btn primary" id="b-demo">Ver ejemplo</button>
+  </section>
+  <div class="demo-note" id="demonote" hidden>
+    <span><strong>Ejemplo con datos inventados.</strong> Estos equipos y cuotas no existen: no los uses para jugar.</span>
+    <button class="btn" id="b-real">Usar partidos reales</button>
+  </div>
+
   <section class="panel calc" aria-labelledby="calc-h">
     <h2 id="calc-h">Calculadora de dobles y triples</h2>
     <p class="sub">Cada doble multiplica las apuestas por 2 y cada triple, por 3. Elige una combinación o pulsa una casilla de la tabla.</p>
@@ -345,7 +357,7 @@ Dixon-Coles: 0-0 ×(1 − λl·λv·ρ)   1-1 ×(1 − ρ)
 Casas:  p = (1/cuota) / Σ(1/cuota)   (sin margen)
 Final = (1 − peso)·modelo + peso·casas</div>
     <p>Dixon-Coles corrige los marcadores bajos, donde el Poisson simple se equivoca más: con ρ negativo suben el 0-0 y el 1-1, y con ello la X. Si un partido tiene cuotas, la app quita el margen de la casa y usa esa probabilidad; el modelo queda como referencia. En una prueba con 90 partidos europeos de esta temporada, las casas acertaron el favorito el 62% de las veces y el modelo el 53%, y cuanto más peso tenían las cuotas, menor era el error. Puedes cambiar ese peso en los parámetros.</p>
-    <p>Es una herramienta para organizar el boleto, no una forma de ganar: no garantiza aciertos ni premios. Esta web no vende boletos, no acepta apuestas ni dinero, y no tiene relación con Loterías y Apuestas del Estado ni con The Odds API. Comprueba siempre los partidos con el boleto oficial. Solo para mayores de 18 años; juega con responsabilidad. Tus signos y tu clave se guardan en tu navegador; la web no tiene cuentas ni cookies.</p>
+    <p>Es una herramienta para organizar el boleto, no una forma de ganar: no garantiza aciertos ni premios. Esta web no vende boletos, no acepta apuestas ni dinero, y no tiene relación con Loterías y Apuestas del Estado ni con The Odds API. Comprueba siempre los partidos con el boleto oficial. Solo para mayores de 18 años; juega con responsabilidad. Tus signos y tu clave se guardan en tu navegador; la web no tiene cuentas. Las visitas se cuentan de forma agregada con Cloudflare Web Analytics.</p>
   </section>
 </div>
 
@@ -472,6 +484,7 @@ function renderBoard(){
   </div></details>`;
   $('jname').value=S.name;
   renderSel();
+  renderStart();
   $('p-avg').value=S.params.avg; $('p-prior').value=S.params.prior; $('p-home').value=S.params.home; $('p-price').value=S.params.price; $('p-rho').value=S.params.rho; $('p-mkt').value=S.params.mkt; $('p-beta').value=S.params.beta; $('p-wf').value=S.params.wf; $('stamp').textContent=S.stamp||'';
   update();
 }
@@ -593,6 +606,24 @@ function allocate(sorted,maxBets,goal){
   }
   return best;
 }
+/* Ejemplo sin clave */
+const DEMO=[['Río Verde','Costa Azul',1.80,3.60,4.50],['Sierra Alta','Puerto Viejo',2.50,3.20,2.90],['Valle Norte','Atlético Faro',1.45,4.40,7.50],['Unión Lago','Real Pinar',3.40,3.30,2.15],['Monte Claro','Bahía FC',2.10,3.30,3.60],['Deportivo Sol','Las Dunas',6.50,4.20,1.50],['Villa Roble','Campo Nuevo',2.05,3.40,3.70],['Racing Sur','Isla Blanca',2.80,3.10,2.70],['Cerro Grande','Olímpico Mar',1.60,4.00,5.50],['Peña Dorada','Ribera CF',3.10,3.20,2.35],['Atlético Brisa','Torre Vieja',2.25,3.20,3.30],['Las Encinas','Sporting Luna',4.20,3.60,1.85],['Nueva Aurora','Vega Alta',1.95,3.50,4.00],['Santa Olaya','Puente Real',2.65,3.10,2.85],['Ciudad Jardín','Estrella Roja',2.20,3.40,3.20]];
+const demoM=(d,i,pl)=>Object.assign({h:d[0],a:d[1],hs:[0,0,0,0],as:[0,0,0,0],sel:'',odds:[d[2],d[3],d[4]].map(x=>x.toFixed(2)),mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:''},pl?{resH:'',resA:''}:{res:''});
+function renderStart(){
+  const hasOdds=S.matches.concat([S.pleno]).some(m=>m.odds&&m.odds.some(Boolean));
+  $('startbox').hidden=!!S.demo||hasOdds;
+  $('demonote').hidden=!S.demo;
+}
+$('b-demo').addEventListener('click',()=>{
+  const h=archive();
+  if(h.demo){S=normState(h.demo)}else{
+    S={id:'demo',demo:true,dataV:DATA_V,mktV:1,name:'Ejemplo (datos inventados)',stamp:'Equipos y cuotas inventados',params:S.params,matches:DEMO.slice(0,14).map((d,i)=>demoM(d,i)),pleno:demoM(DEMO[14],14,true)};
+    suggest(0,0);
+  }
+  save();renderBoard();window.scrollTo(0,0);toast('Ejemplo cargado');
+});
+$('b-real').addEventListener('click',()=>{const k=$('keysbox'),p=$('pickbox');if(k)k.open=true;if(p)p.open=true;const y=$('sync');if(y&&!y.hidden)y.scrollIntoView({behavior:'smooth'})});
+
 /* Calculadora de dobles y triples */
 const CALC_T=[0,1,2,3,4,5,6],CALC_D=[0,1,2,3,4,5,6,7,8];
 const euros=x=>nf(x,2)+' €';
@@ -638,7 +669,7 @@ $('b-copy').addEventListener('click',()=>{
   try{navigator.clipboard.writeText(txt).then(()=>{out.hidden=true;toast('Boleto copiado')},fallback)}catch(err){fallback()}
 });
 function twoStep(btn,label,fn){let armed=false,t;btn.addEventListener('click',()=>{if(!armed){armed=true;btn.textContent='Pulsa otra vez para confirmar';t=setTimeout(()=>{armed=false;btn.textContent=label},3000);return}clearTimeout(t);armed=false;btn.textContent=label;fn()})}
-twoStep($('b-clear'),'Vaciar jornada',()=>{S.name='Nueva jornada';S.stamp='';S.matches=S.matches.map((m,i)=>({h:'Local '+(i+1),a:'Visitante '+(i+1),hs:[0,0,0,0],as:[0,0,0,0],sel:'',res:'',odds:['','',''],mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:''}));S.pleno={h:'Local',a:'Visitante',hs:[0,0,0,0],as:[0,0,0,0],sel:'',resH:'',resA:'',odds:['','',''],mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:''};save();renderBoard();toast('Jornada vaciada')});
+twoStep($('b-clear'),'Vaciar jornada',()=>{if(S.demo){S.id='j'+Date.now();S.demo=false}S.name='Nueva jornada';S.stamp='';S.matches=S.matches.map((m,i)=>({h:'Local '+(i+1),a:'Visitante '+(i+1),hs:[0,0,0,0],as:[0,0,0,0],sel:'',res:'',odds:['','',''],mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:''}));S.pleno={h:'Local',a:'Visitante',hs:[0,0,0,0],as:[0,0,0,0],sel:'',resH:'',resA:'',odds:['','',''],mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:''};save();renderBoard();toast('Jornada vaciada')});
 
 
 /* Historial de jornadas */

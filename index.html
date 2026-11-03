@@ -271,8 +271,7 @@ h2{font-family:var(--f-display);font-size:24px;font-weight:700;text-transform:up
       <p class="sub">Regístrate gratis en <a href="https://the-odds-api.com/" target="_blank" rel="noopener noreferrer">The Odds API</a> (plan Starter, 500 créditos al mes), copia la clave que te envían y pégala aquí.</p>
       <div class="edit-grid">
         <label class="field wide" for="k-odds">The Odds API<input id="k-odds" type="password" autocomplete="off" spellcheck="false"></label>
-        <label class="field wide" for="k-foot">API-Football (opcional, para goles)<input id="k-foot" type="password" autocomplete="off" spellcheck="false"></label>
-        <button class="btn" id="b-keytest">Probar claves</button>
+        <button class="btn" id="b-keytest">Probar clave</button>
       </div>
       <p class="sub">Se guarda solo en este navegador y se usa solo para consultar The Odds API. No la compartas: cada persona necesita la suya.</p>
     </details>
@@ -293,14 +292,13 @@ h2{font-family:var(--f-display);font-size:24px;font-weight:700;text-transform:up
     </details>
     <div class="sync-btns">
       <button class="btn" id="b-odds">Actualizar cuotas</button>
-      <button class="btn" id="b-goals">Cargar goles</button>
       <button class="btn" id="b-results">Cargar resultados</button>
     </div>
     <p class="sync-log" id="synclog" aria-live="polite"></p>
   </section>
 
   <section class="board" aria-label="Partidos">
-    <div class="head"><span>#</span><span>Partido · goles esperados</span><span>Probabilidad 1 · X · 2</span><span class="hs"><span>1</span><span>X</span><span>2</span></span></div>
+    <div class="head"><span>#</span><span>Partido</span><span>Probabilidad 1 · X · 2</span><span class="hs"><span>1</span><span>X</span><span>2</span></span></div>
     <div id="board"></div>
   </section>
 
@@ -335,7 +333,7 @@ h2{font-family:var(--f-display);font-size:24px;font-weight:700;text-transform:up
 
   <section class="method">
     <h2>Cómo calcula</h2>
-    <p>Si un partido tiene cuotas, la app usa la probabilidad que implican, sin el margen de las casas. El modelo es solo una referencia: calcula ataque y defensa con los goles que cargues o escribas, comparados con la media de la competición.</p>
+    <p>Si un partido tiene cuotas, la web usa la probabilidad que implican, sin el margen de las casas. Si además escribes los goles de los equipos en Datos del partido, verás el modelo como referencia. La tabla de marcadores del pleno sale del modelo y, sin goles, es solo orientativa.</p>
     <div class="formula">ataque  = (GF + μ·peso) / (PJ + peso) / μ × (1 + ajuste)
 defensa = (GC + μ·peso) / (PJ + peso) / μ × (1 − ajuste)
 valor   = (valor XI local / valor XI visitante)^β
@@ -432,6 +430,7 @@ function market(m){
   const inv=o.map(x=>1/x), s=inv[0]+inv[1]+inv[2];
   return {'1':inv[0]/s,'X':inv[1]/s,'2':inv[2]/s};
 }
+const hasGoals=m=>(+m.hs[0]>0)&&(+m.as[0]>0);
 const fav=p=>SIGNS.reduce((a,b)=>p[b]>p[a]?b:a,'1');
 
 /* Render estructura */
@@ -483,13 +482,14 @@ function update(){
   let bets=1, empty=0, dob=0, tri=0, realN=0, realHit=0, exp=0; const review=[];
   S.matches.forEach((m,i)=>{
     const r=model(m), row=rows[i], f=fav(r.p);
+    const hg=hasGoals(m);
+    row.querySelector('.xg').hidden=!hg;
     row.querySelector('[data-x="h"]').textContent=nf(r.lh,2);
     row.querySelector('[data-x="a"]').textContent=nf(r.la,2);
     row.querySelector('.fi').innerHTML=infoHtml(m);
     const mk=row.querySelector('.mk');
-    if(r.pk){
-      mk.innerHTML=`Modelo ${SIGNS.map(s=>pct(r.pm[s])).join(' · ')} | Casas ${SIGNS.map(s=>pct(r.pk[s])).join(' · ')}`;
-    } else mk.textContent='Sin cuotas: solo modelo';
+    if(r.pk)mk.textContent=(hg?`Modelo ${SIGNS.map(s=>pct(r.pm[s])).join(' · ')} | `:'')+`Casas ${SIGNS.map(s=>pct(r.pk[s])).join(' · ')}`;
+    else mk.textContent=hg?'Sin cuotas: solo modelo':'Sin cuotas ni goles: añádelos en Datos del partido';
     const segs=row.querySelectorAll('.bar span');
     SIGNS.forEach((s,k)=>{segs[k].style.flexBasis=(r.p[s]*100)+'%';segs[k].textContent=r.p[s]>=.11?pct(r.p[s]):'';segs[k].title=s+': '+pct(r.p[s])});
     row.querySelectorAll('.sg').forEach(b=>{const s=b.dataset.s,on=m.sel.includes(s);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);b.classList.toggle('fav',s===f);b.classList.toggle('real',m.res===s);b.title=s+' · '+pct(r.p[s])});
@@ -498,7 +498,7 @@ function update(){
     if(m.sel&&!m.res){
       const why=[]; const fm=fav(r.pm), fk=r.pk?fav(r.pk):null;
       if(c<.5)why.push(`tus signos cubren solo el ${pct(c)}`);
-      if(fk&&fm!==fk)why.push(`el modelo prefiere ${fm} y las casas ${fk}`);
+      if(fk&&hasGoals(m)&&fm!==fk)why.push(`el modelo prefiere ${fm} y las casas ${fk}`);
       if(why.length)review.push({i,m,c,why});
     }
     const n=m.sel.length; if(!n)empty++; else bets*=n; if(n===2)dob++; if(n===3)tri++;
@@ -515,7 +515,7 @@ function update(){
     CAT.map((h,i)=>`<tr><th scope="row">${esc(S.pleno.h.slice(0,3))} ${h}</th>${CAT.map((a,j)=>{const k=h+'-'+a,v=g[i][j];return `<td><button class="cell ${S.pleno.sel===k?'on':''} ${real===k?'real':''}" data-cell="${k}" style="--a:${Math.round(8+v/mx*62)}%" aria-label="${h}-${a}: ${nf(v*100,1)}%">${nf(v*100,1)}%</button></td>`}).join('')}</tr>`).join('')+'</tbody>';
   const ps=S.pleno.sel?S.pleno.sel.split('-'):null;
   const pp=ps?g[CAT.indexOf(ps[0])][CAT.indexOf(ps[1])]:0;
-  $('plabel').textContent=`Goles esperados ${nf(pr.lh,2)} – ${nf(pr.la,2)}${pr.pk?' · mezclado con cuotas':''} · 1 ${pct(pr.p['1'])} · X ${pct(pr.p['X'])} · 2 ${pct(pr.p['2'])}`+(ps?` · Tu pleno ${S.pleno.sel}: ${nf(pp*100,1)}%`:'')+(real?(real===S.pleno.sel?' · Pleno acertado':' · Pleno fallado'):'');
+  $('plabel').textContent=`${hasGoals(S.pleno)?`Goles esperados ${nf(pr.lh,2)} – ${nf(pr.la,2)}`:'Sin goles: marcadores orientativos'} · 1 ${pct(pr.p['1'])} · X ${pct(pr.p['X'])} · 2 ${pct(pr.p['2'])}`+(ps?` · Tu pleno ${S.pleno.sel}: ${nf(pp*100,1)}%`:'')+(real?(real===S.pleno.sel?' · Pleno acertado':' · Pleno fallado'):'');
   // Distribución
   let d=[1]; covs.forEach(c=>{const n=new Array(d.length+1).fill(0);d.forEach((v,k)=>{n[k]+=v*(1-c);n[k+1]+=v*c});d=n});
   const dm=Math.max(...d);
@@ -668,7 +668,6 @@ let reqN=0; const pending={};
 window.__qlCb=(id,txt)=>{const f=pending[id];if(f){delete pending[id];let o;try{o=JSON.parse(txt)}catch(e){o={status:0,error:'Respuesta no válida'}}f(o)}};
 const nativeGet=(url,hn,hv)=>new Promise(res=>{const id='r'+(++reqN);pending[id]=res;window.QLNative.get(id,url,hn||'',hv||'')});
 const ODDS='https://api.the-odds-api.com/v4/sports/';
-const FOOT='https://v3.football.api-sports.io/';
 function logMsg(t,err){const l=$('synclog');l.textContent=t;l.classList.toggle('err',!!err)}
 const scrub=(t,k)=>k?String(t).split(k).join('•••'):String(t);
 async function oddsGet(path,params){
@@ -685,24 +684,8 @@ async function oddsGet(path,params){
 }
 let oddsLeft=null;
 const leftTxt=()=>oddsLeft!=null?` Créditos restantes: ${oddsLeft}.`:'';
-async function footGet(path,params){
-  const key=getKeys().foot; if(!key)throw new Error('Falta la clave de API-Football');
-  const q=new URLSearchParams(params||{}).toString();
-  const r=await nativeGet(FOOT+path+(q?'?'+q:''),'x-apisports-key',key);
-  if(r.error)throw new Error(scrub(r.error,key));
-  if(r.status===429)throw new Error('API-Football: demasiadas peticiones, espera un minuto');
-  let d;try{d=JSON.parse(r.body)}catch(e){throw new Error('API-Football: respuesta no válida')}
-  const er=d.errors; const msgs=Array.isArray(er)?er:(er&&typeof er==='object'?Object.values(er):[]);
-  if(msgs.length)throw new Error('API-Football: '+scrub(msgs.join(' '),key));
-  if(r.status!==200)throw new Error('API-Football: error '+r.status);
-  return d;
-}
-const footSeason=()=>{const d=new Date();return d.getMonth()>=6?d.getFullYear():d.getFullYear()-1};
 const isoZ=d=>d.toISOString().replace(/\.\d+Z$/,'Z');
 const fmtTime=t=>{try{return new Date(t).toLocaleString('es-ES',{weekday:'short',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return t}};
-const nameKey=x=>String(x).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\b(fc|cf|ac|sc|cd|ud|sd|rc|rcd|ca|afc|ssc|as|ss|club|de|the|real|sporting|calcio|bsc|vfb|tsg|fk|sk|kv)\b/g,' ').replace(/\s+/g,' ').trim();
-function sameTeam(a,b){const x=nameKey(a),y=nameKey(b);if(!x||!y)return String(a).toLowerCase()===String(b).toLowerCase();if(x===y||x.includes(y)||y.includes(x))return true;const X=x.split(' '),Y=y.split(' ');return X.some(t=>t.length>3&&Y.includes(t))}
-
 /* Elegir partidos */
 let events=[],picks=[];
 function evHtml(e){const on=picks.some(p=>p.id===e.id);return `<button class="evt${on?' on':''}" data-ev="${esc(e.id)}" aria-pressed="${on}">${esc(e.home_team)} – ${esc(e.away_team)}<small>${esc(fmtTime(e.commence_time))} · ${esc((compBy(e.sport_key)||{}).n||e.sport_key)}</small></button>`}
@@ -738,24 +721,21 @@ async function updateOdds(){
   return `Cuotas actualizadas en ${done} de ${ms.length} partidos.`+leftTxt()+(miss.length?`\nSin cuotas: ${miss.join(', ')}.`:'');
 }
 function busy(btn,fn){return async()=>{if(btn.disabled)return;btn.disabled=true;logMsg('Consultando…');try{logMsg(await fn())}catch(e){logMsg(e.message||String(e),true)}btn.disabled=false;if(btn===$('b-create'))$('b-create').disabled=picks.length!==15}}
-if(!window.QLNative&&window.fetch)window.QLNative={get(id,url,hn,hv){fetch(url,{headers:hn?{[hn]:hv}:{}}).then(async x=>({status:x.status,body:await x.text(),remaining:x.headers.get('x-requests-remaining')})).catch(()=>({status:0,error:url.includes('football')?'API-Football no admite esta conexión desde el navegador. El resto de la web funciona igual.':'No se ha podido conectar. Revisa tu conexión.'})).then(o=>window.__qlCb(id,JSON.stringify(o)))}};
+if(!window.QLNative&&window.fetch)window.QLNative={get(id,url,hn,hv){fetch(url,{headers:hn?{[hn]:hv}:{}}).then(async x=>({status:x.status,body:await x.text(),remaining:x.headers.get('x-requests-remaining')})).catch(()=>({status:0,error:'No se ha podido conectar. Revisa tu conexión.'})).then(o=>window.__qlCb(id,JSON.stringify(o)))}};
 function initSync(){
   if(!window.QLNative)return;
   $('sync').hidden=false;
-  const k=getKeys(); $('k-odds').value=k.odds||''; $('k-foot').value=k.foot||'';
-  if(!k.odds&&!k.foot)$('keysbox').open=true;
+  const k=getKeys(); $('k-odds').value=k.odds||'';
+  if(!k.odds)$('keysbox').open=true;
   if(!liveMatches().length)$('pickbox').open=true;
-  const saveK=()=>setKeys({odds:$('k-odds').value.trim(),foot:$('k-foot').value.trim()});
-  $('k-odds').addEventListener('change',saveK);$('k-foot').addEventListener('change',saveK);
+  const saveK=()=>setKeys({odds:$('k-odds').value.trim()});
+  $('k-odds').addEventListener('change',saveK);
   $('comps').innerHTML=COMPS.map(c=>`<label><input type="checkbox" value="${c.k}"${c.on?' checked':''}>${esc(c.n)}</label>`).join('');
   $('b-keytest').addEventListener('click',busy($('b-keytest'),async()=>{
-    saveK(); const out=[];
-    if(getKeys().odds){try{await oddsGet('',{});out.push('The Odds API: correcta.'+leftTxt())}catch(e){out.push(e.message)}}else out.push('The Odds API: sin clave.');
-    if(getKeys().foot){try{const st=await footGet('status');const rq=st.response&&st.response.requests;out.push('API-Football: correcta'+(rq?` (${rq.current} de ${rq.limit_day} consultas hoy)`:'')+'.');
-      const to=new Date(),from=new Date(to-14*864e5);
-      try{await footGet('fixtures',{league:140,season:footSeason(),from:from.toISOString().slice(0,10),to:to.toISOString().slice(0,10)});out.push(`Temporada ${footSeason()}: disponible.`)}catch(e){out.push(`Temporada ${footSeason()}: no disponible en tu plan. Las cuotas funcionan igual; los goles no se podrán cargar.`)}
-    }catch(e){out.push(e.message)}}else out.push('API-Football: sin clave.');
-    return out.join('\n');
+    saveK();
+    if(!getKeys().odds)throw new Error('Falta la clave de The Odds API');
+    await oddsGet('',{});
+    return 'Clave correcta.'+leftTxt();
   }));
   $('b-find').addEventListener('click',busy($('b-find'),async()=>{
     saveK();
@@ -785,24 +765,6 @@ function initSync(){
     return 'Jornada creada. '+await updateOdds();
   }));
   $('b-odds').addEventListener('click',busy($('b-odds'),updateOdds));
-  $('b-goals').addEventListener('click',busy($('b-goals'),async()=>{
-    const ms=liveMatches(); if(!ms.length)throw new Error('Esta jornada no se creó desde aquí');
-    const g=bySport(ms); let done=0,miss=[];
-    for(const sp of Object.keys(g)){
-      const c=compBy(sp); if(!c){g[sp].forEach(m=>miss.push(m.h,m.a));continue}
-      const d=await footGet('fixtures',{league:c.l,season:footSeason(),status:'FT'});
-      const T={};let tot=0,n=0;
-      (d.response||[]).forEach(fx=>{const gh=fx.goals&&fx.goals.home,ga=fx.goals&&fx.goals.away;if(gh==null||ga==null)return;
-        [[fx.teams.home.name,gh,ga],[fx.teams.away.name,ga,gh]].forEach(([t,f,a])=>{(T[t]=T[t]||[0,0,0]);T[t][0]++;T[t][1]+=f;T[t][2]+=a;tot+=f;n++})});
-      const find=x=>{const ks=Object.keys(T),exact=ks.find(k=>nameKey(k)===nameKey(x));if(exact)return T[exact];const hits=ks.filter(k=>sameTeam(k,x));return hits.length===1?T[hits[0]]:null};
-      g[sp].forEach(m=>{if(n)m.mu=+(tot/n).toFixed(2);
-        const H=find(m.h),A=find(m.a);
-        if(H){m.hs=[H[0],H[1],H[2],+m.hs[3]||0];done++}else miss.push(m.h);
-        if(A){m.as=[A[0],A[1],A[2],+m.as[3]||0];done++}else miss.push(m.a)});
-    }
-    save();renderBoard();
-    return `Goles cargados en ${done} equipos.`+(miss.length?`\nSin encontrar: ${miss.join(', ')}. Puedes escribirlos en Datos del partido.`:'');
-  }));
   $('b-results').addEventListener('click',busy($('b-results'),async()=>{
     const ms=liveMatches(); if(!ms.length)throw new Error('Esta jornada no se creó desde aquí');
     const g=bySport(ms); let done=0;

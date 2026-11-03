@@ -11,7 +11,7 @@ Herramienta web gratuita para preparar el boleto de La Quiniela: probabilidades 
 
 ## Privacidad
 
-La web no tiene servidor, cuentas ni cookies. La clave y los signos se guardan en tu navegador. Las consultas van directamente de tu navegador a The Odds API y, si lo activas, a API-Football.
+La web no tiene servidor, cuentas ni cookies. La clave y los signos se guardan en tu navegador. Las consultas van directamente de tu navegador a The Odds API.
 
 ## Aviso
 

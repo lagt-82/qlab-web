@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Quiniela Lab</title><meta name="robots" content="noindex"><meta name="description" content="Herramienta gratuita para preparar el boleto de La Quiniela."><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#15211c"></head><body>
+<!doctype html><html lang="es"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Quiniela Lab: calculadora de dobles y triples para La Quiniela</title><meta name="description" content="Prepara tu boleto de La Quiniela gratis: probabilidades según las cuotas, reparto de dobles y triples por presupuesto, coste e historial de jornadas."><link rel="canonical" href="https://qlab-web.pages.dev/"><meta property="og:title" content="Quiniela Lab: calculadora de dobles y triples"><meta property="og:description" content="Reparte dobles y triples según tu presupuesto y mira la probabilidad de tu boleto de La Quiniela."><meta property="og:url" content="https://qlab-web.pages.dev/"><meta property="og:type" content="website"><meta property="og:image" content="https://qlab-web.pages.dev/icon-192.png"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#15211c"></head><body>
 <style>
 /* Layout: boleto vertical — 14 filas con casillas 1·X·2, panel de pleno y distribución de aciertos debajo */
 :root{
@@ -104,6 +104,8 @@ legend{font-size:12px;font-weight:600;padding:0;margin-bottom:4px}
 .rv-n{color:var(--muted);min-width:1.4em}
 #pleno .fi{margin:0 0 10px}
 
+.lead{margin:6px 0 8px;font-size:14px;color:var(--muted);max-width:60ch}
+
 /* Reparto por presupuesto */
 .budget{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
 #b-eur{width:5.5em;background:var(--surface);border:1px solid var(--grid-strong);border-radius:4px;padding:5px 6px;font-family:var(--f-mono)}
@@ -191,6 +193,7 @@ h2{font-family:var(--f-display);font-size:24px;font-weight:700;text-transform:up
     <div>
       <div class="eyebrow">Preparar el boleto · cuotas y modelo</div>
       <h1>Quiniela <em>Lab</em></h1>
+      <p class="lead">Calculadora gratuita para preparar tu boleto de La Quiniela: probabilidad de cada signo según las cuotas, reparto de dobles y triples por presupuesto, coste de las apuestas e historial de jornadas.</p>
       <input id="jname" aria-label="Nombre de la jornada">
       <div class="stamp" id="stamp"></div>
     </div>

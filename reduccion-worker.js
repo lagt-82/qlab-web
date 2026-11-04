@@ -1,55 +1,48 @@
 /* Quiniela Lab: reducciones por cobertura. Toda garantía se comprueba por fuerza bruta antes de devolverse. */
-function engine(radices,k,seed){
+/* Búsqueda local con pesos sobre las combinaciones sin cubrir: no se para hasta agotar el tiempo. */
+function buildBalls(radices,k){
   const m=radices.length,mul=[];let N=1;for(let i=0;i<m;i++){mul[i]=N;N*=radices[i]}
-  const dig=(c,i)=>Math.floor(c/mul[i])%radices[i];
-  const ball=c=>{const out=[c];const rec=(cur,start,left)=>{if(!left)return;for(let i=start;i<m;i++){const d=dig(cur,i);for(let v=0;v<radices[i];v++){if(v===d)continue;const nx=cur+(v-d)*mul[i];out.push(nx);rec(nx,i+1,left-1)}}};rec(c,0,k);return out};
-  let s=(seed>>>0)||1;const rnd=()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296};
-  return {radices,m,N,mul,dig,ball,rnd};
+  let size=1,c1=[1];for(let i=0;i<m;i++){const n=c1.slice();n.push(0);for(let j=c1.length;j>=1;j--)n[j]=(n[j]||0)+c1[j-1]*(radices[i]-1);c1=n}
+  size=0;for(let j=0;j<=k&&j<c1.length;j++)size+=c1[j];
+  const B=new Int32Array(N*size);
+  for(let c=0;c<N;c++){let p=c*size;B[p++]=c;const rec=(cur,start,left)=>{if(!left)return;for(let i=start;i<m;i++){const d=Math.floor(cur/mul[i])%radices[i];for(let v=0;v<radices[i];v++){if(v===d)continue;const nx=cur+(v-d)*mul[i];B[p++]=nx;rec(nx,i+1,left-1)}}};rec(c,0,k)}
+  return {N,size,B};
 }
-function greedy(E){
-  const {N,ball,rnd}=E,cov=new Uint8Array(N),balls=new Array(N),bl=c=>balls[c]||(balls[c]=ball(c));let unc=N;const picks=[],items=[];
-  for(let c=0;c<N;c++)items.push({c,g:bl(c).length+rnd()*.5});items.sort((a,b)=>b.g-a.g);
-  while(unc>0){
-    let best=-1,bg=-1,scan=0;
-    for(const it of items){if(it.g<=bg)break;let g=0;for(const x of bl(it.c))if(!cov[x])g++;it.g=g+rnd()*.5;if(it.g>bg){bg=it.g;best=it.c}if(++scan>4000)break}
-    if(best<0||bg<1){for(let c=0;c<N;c++)if(!cov[c]){best=c;break}}
-    picks.push(best);for(const x of bl(best))if(!cov[x]){cov[x]=1;unc--}
-    items.sort((a,b)=>b.g-a.g);
+function rwls(radices,k,ms,seed,start,onBest){
+  const {N,size,B}=buildBalls(radices,k),end=Date.now()+ms;let s=(seed>>>0)||1;const rnd=n=>{s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return s%n};
+  const w=new Int32Array(N).fill(1),cov=new Int32Array(N),inS=new Uint8Array(N),score=new Float64Array(N),stamp=new Float64Array(N),can=new Uint8Array(N).fill(1);
+  const sol=[],pos=new Int32Array(N).fill(-1);const unc=[],upos=new Int32Array(N).fill(-1);
+  const uadd=e=>{upos[e]=unc.length;unc.push(e)},udel=e=>{const i=upos[e],l=unc.pop();if(l!==e){unc[i]=l;upos[l]=i}upos[e]=-1};
+  for(let e=0;e<N;e++)uadd(e);for(let c=0;c<N;c++)score[c]=size;
+  const add=c=>{inS[c]=1;pos[c]=sol.length;sol.push(c);score[c]=-score[c];
+    for(let i=c*size,a=i+size;i<a;i++){const e=B[i],we=w[e];
+      if(cov[e]===0){udel(e);for(let j=e*size,b=j+size;j<b;j++){const d=B[j];if(d!==c){score[d]-=we;can[d]=1}}}
+      else if(cov[e]===1){for(let j=e*size,b=j+size;j<b;j++){const d=B[j];if(inS[d]&&d!==c){score[d]+=we;break}}}
+      cov[e]++}};
+  const del=c=>{inS[c]=0;const i0=pos[c],l=sol.pop();if(l!==c){sol[i0]=l;pos[l]=i0}pos[c]=-1;score[c]=-score[c];can[c]=0;
+    for(let i=c*size,a=i+size;i<a;i++){const e=B[i],we=w[e];cov[e]--;
+      if(cov[e]===0){uadd(e);for(let j=e*size,b=j+size;j<b;j++){const d=B[j];if(d!==c){score[d]+=we;can[d]=1}}}
+      else if(cov[e]===1){for(let j=e*size,b=j+size;j<b;j++){const d=B[j];if(inS[d]){score[d]-=we;break}}}}};
+  if(start)for(const c of start)add(c);
+  while(unc.length){let bc=-1,bs=-1;const e=unc[rnd(unc.length)];for(let j=e*size,b=j+size;j<b;j++){const d=B[j];if(score[d]>bs||(score[d]===bs&&rnd(2))){bs=score[d];bc=d}}add(bc)}
+  let best=sol.slice(),it=0,tabu=-1;
+  const pickRem=()=>{let bc=-1,bs=-Infinity,bt=Infinity;for(let i=0;i<sol.length;i++){const c=sol[i];if(c===tabu)continue;const sc=score[c];if(sc>bs||(sc===bs&&stamp[c]<bt)){bc=c;bs=sc;bt=stamp[c]}}return bc};
+  while(true){
+    if(!(++it&255)&&Date.now()>=end)break;
+    if(!unc.length){best=sol.slice();if(onBest)onBest(best,it);if(sol.length<=1)break;del(pickRem());continue}
+    const r=pickRem();if(r<0)break;del(r);stamp[r]=it;
+    const e=unc[rnd(unc.length)];let bc=-1,bs=-1,bt=Infinity;
+    for(let j=e*size,b=j+size;j<b;j++){const d=B[j];if(!can[d])continue;const sc=score[d];if(sc>bs||(sc===bs&&stamp[d]<bt)){bc=d;bs=sc;bt=stamp[d]}}
+    if(bc<0)bc=B[e*size+rnd(size)];
+    add(bc);stamp[bc]=it;tabu=bc;
+    for(let i=0;i<unc.length;i++){const x=unc[i];w[x]++;for(let j=x*size,b=j+size;j<b;j++)score[B[j]]++}
   }
-  return picks;
-}
-function prune(E,picks){
-  const cnt=new Int32Array(E.N);for(const c of picks)for(const x of E.ball(c))cnt[x]++;
-  const out=[];picks.slice().sort(()=>E.rnd()-.5).forEach(c=>{const b=E.ball(c);if(b.every(x=>cnt[x]>=2))b.forEach(x=>cnt[x]--);else out.push(c)});return out;
-}
-function anneal(E,start,ms){
-  let cur=start.slice(),best=cur.slice();const end=Date.now()+ms,cnt=new Int32Array(E.N);
-  const add=(c,d)=>{for(const x of E.ball(c))cnt[x]+=d};cur.forEach(c=>add(c,1));
-  while(Date.now()<end&&cur.length>1){
-    const rm=Math.floor(E.rnd()*cur.length);add(cur[rm],-1);cur[rm]=cur[cur.length-1];cur.pop();
-    let unc=0;for(let i=0;i<E.N;i++)if(!cnt[i])unc++;
-    let T=1.2,it=0;
-    while(unc>0&&Date.now()<end&&it<600000){
-      it++;const i=Math.floor(E.rnd()*cur.length),old=cur[i],pos=Math.floor(E.rnd()*E.m),r=E.radices[pos],d=E.dig(old,pos),v=(d+1+Math.floor(E.rnd()*(r-1)))%r,nx=old+(v-d)*E.mul[pos];
-      const oB=E.ball(old),nB=E.ball(nx);let dU=0;
-      for(const x of oB){cnt[x]--;if(cnt[x]===0)dU++}
-      for(const x of nB){if(cnt[x]===0)dU--;cnt[x]++}
-      if(dU<=0||E.rnd()<Math.exp(-dU/T)){cur[i]=nx;unc+=dU}else{for(const x of nB)cnt[x]--;for(const x of oB)cnt[x]++}
-      T=Math.max(.15,T*.99997);
-    }
-    if(unc===0)best=cur.slice();else break;
-  }
-  return best;
-}
-function single(radices,k,ms,seed){
-  const E=engine(radices,k,seed),t0=Date.now();let best=null;
-  do{const p=prune(E,greedy(E));if(!best||p.length<best.length)best=p}while(Date.now()-t0<ms*.35&&best.length>1);
-  return anneal(E,best,Math.max(0,ms-(Date.now()-t0)));
+  return {cols:best,it};
 }
 /* Producto de dos códigos: suma los fallos admitidos y mantiene la garantía. */
 function product(radices,k,ms){
   if(k<2||radices.length<4)return null;
-  const h=radices.length>>1,a=radices.slice(0,h),b=radices.slice(h),A=single(a,1,ms/2,11),B=single(b,k-1,ms/2,29);let na=1;a.forEach(r=>na*=r);
+  const h=radices.length>>1,a=radices.slice(0,h),b=radices.slice(h),A=rwls(a,1,ms/2,11).cols,B=rwls(b,k-1,ms/2,29).cols;let na=1;a.forEach(r=>na*=r);
   const out=[];A.forEach(x=>B.forEach(y=>out.push(x+y*na)));return out;
 }
 function verify(radices,k,cols){
@@ -58,11 +51,15 @@ function verify(radices,k,cols){
   for(let o=0;o<N;o++){const d=digs(o);let b=1e9;for(const c of C){let t=0;for(let i=0;i<d.length;i++)if(c[i]!==d[i])t++;if(t<b)b=t;if(!b)break}if(b>worst)worst=b;if(worst>k)break}
   return {ok:worst<=k,worst,N};
 }
-function run(radices,k,ms){
+function search(radices,k,ms,seed){
+  const pr=product(radices,k,ms*.1);if(!pr)return rwls(radices,k,ms,seed).cols;
+  const a=rwls(radices,k,ms*.45,seed).cols,st=pr.length<a.length?pr:a,b=rwls(radices,k,ms*.45,seed+1,st).cols;
+  return [a,b,pr].reduce((x,y)=>y.length<x.length?y:x);
+}
+function run(radices,k,ms,seed){
   if(!radices.length)return {cols:[0],ver:{ok:true,worst:0,N:1}};
   let N=1;radices.forEach(r=>N*=r);if(k>=radices.length)return {cols:[0],ver:{ok:true,worst:radices.length,N}};
-  const sh=k>=2&&radices.length>=4?ms*.5:ms;let best=single(radices,k,sh,7);const pr=product(radices,k,ms-sh);if(pr&&pr.length<best.length)best=pr;
-  const ver=verify(radices,k,best);return {cols:best,ver};
+  const best=search(radices,k,ms,seed||7),ver=verify(radices,k,best);return {cols:best,ver};
 }
 if(typeof self!=='undefined'&&self.postMessage&&typeof window==='undefined'){self.onmessage=e=>{const {radices,k,ms}=e.data;try{self.postMessage({ok:true,...run(radices,k,ms)})}catch(err){self.postMessage({ok:false,error:String(err)})}}}
-if(typeof module!=='undefined')module.exports={run,verify};
+if(typeof module!=='undefined')module.exports={run,verify,rwls};

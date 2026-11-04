@@ -444,8 +444,11 @@ function model(m){
 function market(m){
   const o=(m.odds||[]).map(x=>parseFloat(String(x).replace(',','.')));
   if(o.length<3||o.some(x=>!(x>1)))return null;
-  const inv=o.map(x=>1/x), s=inv[0]+inv[1]+inv[2];
-  return {'1':inv[0]/s,'X':inv[1]/s,'2':inv[2]/s};
+  // Quita el margen con el método de potencia: busca k para que (1/cuota)^k sume 1.
+  const inv=o.map(x=>1/x);let lo=.2,hi=5;
+  for(let i=0;i<60;i++){const k=(lo+hi)/2,s=inv[0]**k+inv[1]**k+inv[2]**k;if(s>1)lo=k;else hi=k}
+  const k=(lo+hi)/2,p=inv.map(x=>x**k),s=p[0]+p[1]+p[2];
+  return {'1':p[0]/s,'X':p[1]/s,'2':p[2]/s};
 }
 const hasGoals=m=>(+m.hs[0]>0)&&(+m.as[0]>0);
 const fav=p=>SIGNS.reduce((a,b)=>p[b]>p[a]?b:a,'1');

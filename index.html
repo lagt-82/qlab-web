@@ -137,7 +137,10 @@ legend{font-size:12px;font-weight:600;padding:0;margin-bottom:4px}
 .sync-log.err{color:var(--miss)}
 .sync .field select,.sync .field input{width:100%}
 .pick-tools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;padding:10px 0}
-.comps{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:13px;flex-basis:100%}
+.comps{display:grid;gap:10px;font-size:13px;flex-basis:100%}
+.comp-g{margin:0;padding:0;border:0;min-width:0}
+.comp-g legend{padding:0;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--muted)}
+.comp-l{display:flex;flex-wrap:wrap;gap:6px 12px}
 .comps label{display:flex;gap:5px;align-items:center}
 .pick-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:10px}
 .pick-cols h3{font-size:13px;margin:0 0 6px}
@@ -297,7 +300,7 @@ h2{font-family:var(--f-display);font-size:24px;font-weight:700;text-transform:up
       </div>
       <label class="field wide" for="p-filter">Filtrar por equipo<input id="p-filter" autocomplete="off"></label>
       <div class="pick-cols">
-        <div><h3>Partidos encontrados</h3><div class="evlist" id="evlist"><p class="sub">Elige competiciones y pulsa Buscar partidos.</p></div></div>
+        <div><h3>Partidos encontrados</h3><div class="evlist" id="evlist"><p class="sub">Elige competiciones y pulsa Buscar partidos. Si una no está en temporada, no saldrán partidos.</p></div></div>
         <div><h3 id="pick-h">Tu quiniela (0 de 15)</h3><ol class="picks" id="picks"></ol>
           <label class="field wide" for="p-name">Nombre de la jornada<input id="p-name" autocomplete="off"></label>
           <button class="btn primary" id="b-create" disabled>Crear jornada y traer cuotas</button>
@@ -690,9 +693,15 @@ twoStep($('b-jdel'),'Borrar jornada',()=>{const h=archive(),ids=Object.keys(h);i
 
 /* Datos en línea (solo en la app de Android) */
 const COMPS=[
- {k:'soccer_spain_la_liga',l:140,n:'LaLiga',on:1},{k:'soccer_spain_segunda_division',l:141,n:'Segunda',on:1},
- {k:'soccer_uefa_champs_league',l:2,n:'Champions',on:1},{k:'soccer_uefa_europa_league',l:3,n:'Europa League',on:1},{k:'soccer_uefa_europa_conference_league',l:848,n:'Conference',on:1},
- {k:'soccer_epl',l:39,n:'Premier',on:1},{k:'soccer_efl_champ',l:40,n:'Championship'},{k:'soccer_italy_serie_a',l:135,n:'Serie A'},{k:'soccer_germany_bundesliga',l:78,n:'Bundesliga'},{k:'soccer_france_ligue_one',l:61,n:'Ligue 1'},{k:'soccer_portugal_primeira_liga',l:94,n:'Portugal'},{k:'soccer_netherlands_eredivisie',l:88,n:'Eredivisie'}];
+ {g:'España',k:'soccer_spain_la_liga',n:'LaLiga',on:1},{g:'España',k:'soccer_spain_segunda_division',n:'Segunda',on:1},{g:'España',k:'soccer_spain_copa_del_rey',n:'Copa del Rey',on:1},
+ {g:'Competiciones UEFA',k:'soccer_uefa_champs_league',n:'Champions',on:1},{g:'Competiciones UEFA',k:'soccer_uefa_europa_league',n:'Europa League',on:1},{g:'Competiciones UEFA',k:'soccer_uefa_europa_conference_league',n:'Conference',on:1},
+ {g:'Selecciones',k:'soccer_uefa_nations_league',n:'Nations League'},{g:'Selecciones',k:'soccer_uefa_euro_qualification',n:'Clasificación Eurocopa'},{g:'Selecciones',k:'soccer_uefa_european_championship',n:'Eurocopa'},{g:'Selecciones',k:'soccer_fifa_world_cup_qualifiers_europe',n:'Clasificación Mundial (Europa)'},{g:'Selecciones',k:'soccer_fifa_world_cup',n:'Mundial'},
+ {g:'Inglaterra',k:'soccer_epl',n:'Premier',on:1},{g:'Inglaterra',k:'soccer_efl_champ',n:'Championship'},{g:'Inglaterra',k:'soccer_england_league1',n:'League One'},{g:'Inglaterra',k:'soccer_england_league2',n:'League Two'},{g:'Inglaterra',k:'soccer_fa_cup',n:'FA Cup'},{g:'Inglaterra',k:'soccer_england_efl_cup',n:'Copa de la Liga'},
+ {g:'Italia',k:'soccer_italy_serie_a',n:'Serie A'},{g:'Italia',k:'soccer_italy_serie_b',n:'Serie B'},{g:'Italia',k:'soccer_italy_coppa_italia',n:'Coppa Italia'},
+ {g:'Alemania',k:'soccer_germany_bundesliga',n:'Bundesliga'},{g:'Alemania',k:'soccer_germany_bundesliga2',n:'2. Bundesliga'},{g:'Alemania',k:'soccer_germany_dfb_pokal',n:'DFB-Pokal'},
+ {g:'Francia',k:'soccer_france_ligue_one',n:'Ligue 1'},{g:'Francia',k:'soccer_france_ligue_two',n:'Ligue 2'},{g:'Francia',k:'soccer_france_coupe_de_france',n:'Copa de Francia'},
+ {g:'Más de Europa',k:'soccer_portugal_primeira_liga',n:'Portugal'},{g:'Más de Europa',k:'soccer_netherlands_eredivisie',n:'Eredivisie'},{g:'Más de Europa',k:'soccer_belgium_first_div',n:'Bélgica'},{g:'Más de Europa',k:'soccer_spl',n:'Escocia'},{g:'Más de Europa',k:'soccer_turkey_super_league',n:'Turquía'},{g:'Más de Europa',k:'soccer_greece_super_league',n:'Grecia'},{g:'Más de Europa',k:'soccer_austria_bundesliga',n:'Austria'},{g:'Más de Europa',k:'soccer_switzerland_superleague',n:'Suiza'},{g:'Más de Europa',k:'soccer_denmark_superliga',n:'Dinamarca'},{g:'Más de Europa',k:'soccer_sweden_allsvenskan',n:'Suecia'},{g:'Más de Europa',k:'soccer_norway_eliteserien',n:'Noruega'},{g:'Más de Europa',k:'soccer_poland_ekstraklasa',n:'Polonia'},
+ {g:'Resto del mundo',k:'soccer_argentina_primera_division',n:'Argentina'},{g:'Resto del mundo',k:'soccer_brazil_campeonato',n:'Brasil'},{g:'Resto del mundo',k:'soccer_mexico_ligamx',n:'México'},{g:'Resto del mundo',k:'soccer_usa_mls',n:'MLS'},{g:'Resto del mundo',k:'soccer_saudi_arabia_pro_league',n:'Arabia Saudí'}];
 const compBy=k=>COMPS.find(c=>c.k===k);
 const KEYS='quiniela-lab-web-keys';
 function getKeys(){try{return JSON.parse(localStorage.getItem(KEYS))||{}}catch(e){return {}}}
@@ -763,7 +772,7 @@ function initSync(){
   if(!liveMatches().length)$('pickbox').open=true;
   const saveK=()=>setKeys({odds:$('k-odds').value.trim()});
   $('k-odds').addEventListener('change',saveK);
-  $('comps').innerHTML=COMPS.map(c=>`<label><input type="checkbox" value="${c.k}"${c.on?' checked':''}>${esc(c.n)}</label>`).join('');
+  $('comps').innerHTML=[...new Set(COMPS.map(c=>c.g))].map(g=>`<fieldset class="comp-g"><legend>${esc(g)}</legend><div class="comp-l">${COMPS.filter(c=>c.g===g).map(c=>`<label><input type="checkbox" value="${c.k}"${c.on?' checked':''}>${esc(c.n)}</label>`).join('')}</div></fieldset>`).join('');
   $('b-keytest').addEventListener('click',busy($('b-keytest'),async()=>{
     saveK();
     if(!getKeys().odds)throw new Error('Falta la clave de The Odds API');
@@ -774,11 +783,14 @@ function initSync(){
     saveK();
     const sel=[...$('comps').querySelectorAll('input:checked')].map(i=>i.value); if(!sel.length)throw new Error('Elige al menos una competición');
     const now=new Date(),to=new Date(now.getTime()+864e5*(+$('p-days').value));
-    const all=[];
-    for(const sp of sel){const d=await oddsGet(sp+'/events',{commenceTimeFrom:isoZ(now),commenceTimeTo:isoZ(to)});d.forEach(e=>all.push(e))}
+    const all=[],skipped=[];
+    for(const sp of sel){
+      try{const d=await oddsGet(sp+'/events',{commenceTimeFrom:isoZ(now),commenceTimeTo:isoZ(to)});d.forEach(e=>all.push(e))}
+      catch(err){if(/clave|sin créditos/i.test(err.message))throw err;skipped.push((compBy(sp)||{}).n||sp)}
+    }
     events=all.sort((a,b)=>String(a.commence_time).localeCompare(String(b.commence_time)));
     renderEvents();
-    return `${events.length} partidos encontrados.`+leftTxt();
+    return `${events.length} partidos encontrados.`+(skipped.length?` Sin datos ahora: ${skipped.join(', ')}.`:'')+leftTxt();
   }));
   $('p-filter').addEventListener('input',renderEvents);
   $('evlist').addEventListener('click',e=>{const b=e.target.closest('[data-ev]');if(!b)return;const id=b.dataset.ev,i=picks.findIndex(p=>p.id===id);

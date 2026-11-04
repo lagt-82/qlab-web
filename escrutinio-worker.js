@@ -23,5 +23,24 @@ function analyze(cols,n,probs){
   }
   return out;
 }
-if(typeof self!=='undefined'&&self.postMessage&&typeof window==='undefined'){self.onmessage=e=>{try{const {cols,n,probs}=e.data;self.postMessage({ok:true,...analyze(cols,n,probs)})}catch(err){self.postMessage({ok:false,error:String(err)})}}}
-if(typeof module!=='undefined')module.exports={analyze};
+/* Agrupa columnas sencillas en boletos con dobles y triples, sin añadir ni repetir apuestas. */
+function groupCols(cols,ms,seed0){
+  const SG=['1','X','2'],n=cols[0].length,mul=[];for(let i=0,m=1;i<n;i++,m*=3)mul[i]=m;
+  const code=c=>{let x=0;for(let i=0;i<n;i++)x+=SG.indexOf(c[i])*mul[i];return x},all=[...new Set(cols.map(code))],dig=(x,i)=>Math.floor(x/mul[i])%3;
+  let s=(seed0>>>0)||1;const rnd=k=>{s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return s%k};
+  const moves=[];for(let i=0;i<n;i++)for(let v=0;v<3;v++)moves.push([i,v]);
+  const grow=(seedC,rem)=>{let el=[seedC];const mask=Array.from({length:n},(_,i)=>1<<dig(seedC,i)),base=Array.from({length:n},(_,i)=>dig(seedC,i));
+    for(let i=moves.length-1;i>0;i--){const j=rnd(i+1),t=moves[i];moves[i]=moves[j];moves[j]=t}
+    let changed=true;while(changed){changed=false;for(const [i,v] of moves){if(mask[i]&(1<<v))continue;const add=[];let ok=true;for(const e of el){if(dig(e,i)!==base[i])continue;const y=e+(v-base[i])*mul[i];if(!rem.has(y)){ok=false;break}add.push(y)}if(ok){mask[i]|=1<<v;el=el.concat(add);changed=true}}}
+    return {el,mask}};
+  let best=null;const end=Date.now()+ms;
+  do{const rem=new Set(all);let list=all.slice();const boxes=[];
+    while(rem.size){list=list.filter(x=>rem.has(x));let top=null;const K=Math.min(list.length,32);for(let t=0;t<K;t++){const g=grow(list[t===0?0:rnd(list.length)],rem);if(!top||g.el.length>top.el.length)top=g;if(top.el.length===rem.size)break}for(const e of top.el)rem.delete(e);boxes.push({mask:top.mask,size:top.el.length});if(best&&boxes.length>=best.length)break}
+    if(!rem.size&&(!best||boxes.length<best.length))best=boxes;
+  }while(Date.now()<end&&best.length>1);
+  const signs=b=>b.mask.map(m=>SG.filter((_,v)=>m&(1<<v)).join(''));
+  const seen=new Set(),target=new Set(all);let ok=true;for(const b of best){const sg=signs(b);let exp=[0];sg.forEach((p,i)=>{const nx=[];for(const x of exp)for(const c of p)nx.push(x+SG.indexOf(c)*mul[i]);exp=nx});for(const x of exp){if(seen.has(x)||!target.has(x))ok=false;seen.add(x)}}if(seen.size!==target.size)ok=false;
+  return {ok,boxes:best.map(b=>({signs:signs(b),size:b.size})).sort((a,b)=>b.size-a.size),total:all.length};
+}
+if(typeof self!=='undefined'&&self.postMessage&&typeof window==='undefined'){self.onmessage=e=>{try{const d=e.data;if(d.group){const g=groupCols(d.cols,d.ms||1500,d.seed||7);self.postMessage({ok:g.ok,group:true,...g});return}const {cols,n,probs}=d;self.postMessage({ok:true,...analyze(cols,n,probs)})}catch(err){self.postMessage({ok:false,error:String(err)})}}}
+if(typeof module!=='undefined')module.exports={analyze,groupCols};

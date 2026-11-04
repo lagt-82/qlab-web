@@ -56,10 +56,43 @@ function search(radices,k,ms,seed){
   const a=rwls(radices,k,ms*.45,seed).cols,st=pr.length<a.length?pr:a,b=rwls(radices,k,ms*.45,seed+1,st).cols;
   return [a,b,pr].reduce((x,y)=>y.length<x.length?y:x);
 }
+/* Cambiar qué signo corresponde a cada dígito no altera la garantía; se elige el reparto con más probabilidad de pleno. */
+function score(cols,radices,w){let v=0;for(const c of cols){let x=c,q=1;for(let j=0;j<radices.length;j++){const r=radices[j];q*=w[j][x%r];x=Math.floor(x/r)}v+=q}return v}
+function bestLabels(cols,radices,w){
+  const m=radices.length,dg=cols.map(c=>{const a=[];let x=c;for(const r of radices){a.push(x%r);x=Math.floor(x/r)}return a});
+  const perms=r=>r===2?[[0,1],[1,0]]:r===3?[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]]:[[0]];
+  const cur=radices.map(r=>perms(r)[0]),obj=()=>{let v=0;for(const d of dg){let q=1;for(let j=0;j<m;j++)q*=w[j][cur[j][d[j]]];v+=q}return v};
+  let best=obj(),imp=true;while(imp){imp=false;for(let j=0;j<m;j++)for(const pm of perms(radices[j])){const old=cur[j];cur[j]=pm;const v=obj();if(v>best*(1+1e-12)){best=v;imp=true}else cur[j]=old}}
+  return dg.map(d=>{let x=0,mul=1;for(let j=0;j<m;j++){x+=cur[j][d[j]]*mul;mul*=radices[j]}return x});
+}
+/* Máxima probabilidad cubierta con un número fijo de columnas. No da garantía. */
+function budgetSearch(radices,k,B,w,ms,seed){
+  const {N,size,B:L}=buildBalls(radices,k),wt=new Float64Array(N);for(let c=0;c<N;c++){let x=c,q=1;for(let j=0;j<radices.length;j++){const r=radices[j];q*=w[j][x%r];x=Math.floor(x/r)}wt[c]=q}
+  let s=(seed>>>0)||1;const rnd=n=>{s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return s%n};
+  const cov=new Int32Array(N),inS=new Uint8Array(N),gain=new Float64Array(N),loss=new Float64Array(N),stamp=new Float64Array(N),sol=[],bonus=.2;
+  const recompute=()=>{for(let c=0;c<N;c++){const on=inS[c];let v=on?bonus*wt[c]:bonus*wt[c];for(let i=c*size,a=i+size;i<a;i++){const e=L[i];if(on?cov[e]===1:cov[e]===0)v+=wt[e]}if(on){loss[c]=v;gain[c]=0}else{gain[c]=v;loss[c]=0}}};
+  const put=c=>{inS[c]=1;sol.push(c);for(let i=c*size,a=i+size;i<a;i++)cov[L[i]]++},take=c=>{inS[c]=0;sol.splice(sol.indexOf(c),1);for(let i=c*size,a=i+size;i<a;i++)cov[L[i]]--};
+  const bestAdd=lim=>{let bc=-1,bg=-1;for(let c=0;c<N;c++)if(!inS[c]&&stamp[c]<=lim&&gain[c]>bg){bg=gain[c];bc=c}return bc};
+  const value=()=>{let v=0;for(let e=0;e<N;e++)if(cov[e])v+=wt[e];for(const c of sol)v+=bonus*wt[c];return v};
+  for(let i=0;i<Math.min(B,N);i++){recompute();put(bestAdd(0))}
+  let best=sol.slice(),bv=value(),it=0;const end=Date.now()+ms;
+  while(Date.now()<end&&B<N){it++;const n=1+rnd(3);
+    for(let q=0;q<n&&sol.length;q++){recompute();let bc=-1,bl=Infinity;for(const c of sol){const l=loss[c]*(1+rnd(600)/1000);if(l<bl&&stamp[c]<it){bl=l;bc=c}}if(bc<0)bc=sol[rnd(sol.length)];take(bc);stamp[bc]=it+3}
+    for(let q=0;q<n;q++){recompute();let bc=bestAdd(it-1);if(bc<0)bc=bestAdd(Infinity);put(bc)}
+    const v=value();if(v>bv*(1+1e-12)){bv=v;best=sol.slice()}else if(v<bv*.995){for(const c of sol.slice())take(c);for(const c of best)put(c)}
+  }
+  cov.fill(0);for(const c of best)for(let i=c*size,a=i+size;i<a;i++)cov[L[i]]=1;let cw=0,tw=0,cn=0;for(let e=0;e<N;e++){tw+=wt[e];if(cov[e]){cw+=wt[e];cn++}}
+  return {cols:best,covered:cw/tw,coveredN:cn,N};
+}
 function run(radices,k,ms,seed){
   if(!radices.length)return {cols:[0],ver:{ok:true,worst:0,N:1}};
   let N=1;radices.forEach(r=>N*=r);if(k>=radices.length)return {cols:[0],ver:{ok:true,worst:radices.length,N}};
   const best=search(radices,k,ms,seed||7),ver=verify(radices,k,best);return {cols:best,ver};
 }
-if(typeof self!=='undefined'&&self.postMessage&&typeof window==='undefined'){self.onmessage=e=>{const {radices,k,ms,seed}=e.data;try{self.postMessage({ok:true,...run(radices,k,ms,seed)})}catch(err){self.postMessage({ok:false,error:String(err)})}}}
-if(typeof module!=='undefined')module.exports={run,verify,rwls};
+function job({radices,k,ms,seed,w,budget}){
+  if(budget){const x=budgetSearch(radices,k,budget,w,ms,seed||7);return {...x,budget:true,p14:score(x.cols,radices,w)}}
+  const x=run(radices,k,ms,seed);if(!w)return x;
+  const cols=bestLabels(x.cols,radices,w);return {cols,ver:verify(radices,k,cols),p14:score(cols,radices,w)};
+}
+if(typeof self!=='undefined'&&self.postMessage&&typeof window==='undefined'){self.onmessage=e=>{try{self.postMessage({ok:true,...job(e.data)})}catch(err){self.postMessage({ok:false,error:String(err)})}}}
+if(typeof module!=='undefined')module.exports={run,verify,rwls,job,bestLabels,budgetSearch,score};

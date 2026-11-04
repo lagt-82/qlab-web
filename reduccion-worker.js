@@ -98,11 +98,36 @@ function run(radices,k,ms,seed){
   let N=1;radices.forEach(r=>N*=r);if(k>=radices.length)return {cols:[0],ver:{ok:true,worst:radices.length,N}};
   const best=search(radices,k,ms,seed||7),ver=verify(radices,k,best);return {cols:best,ver};
 }
-function job({radices,k,ms,seed,w,budget,target}){
+/* Cubre solo una lista condicionada. Las columnas pueden salir de tus signos o, si se pide, de la propia lista. */
+function condReduce(cols,k,ms,seed,inside){
+  const SG=['1','X','2'],n=cols[0].length,mul=[];for(let i=0,m=1;i<n;i++,m*=3)mul[i]=m;
+  const code=c=>{let x=0;for(let i=0;i<n;i++)x+=SG.indexOf(c[i])*mul[i];return x},T=[...new Set(cols)],codes=T.map(code),ids=new Map(codes.map((c,i)=>[c,i]));
+  const marks=[];for(let i=0;i<n;i++){const u=new Set();for(const c of T)u.add(SG.indexOf(c[i]));marks.push([...u])}
+  const build=only=>{const cand=new Map();let tot=0,over=false;
+    const push=(y,e)=>{let a=cand.get(y);if(!a){a=[];cand.set(y,a)}a.push(e);tot++};
+    for(let e=0;e<codes.length&&!over;e++){const rec=(cur,st,left)=>{if(!only||ids.has(cur))push(cur,e);if(!left||tot>7e6){if(tot>7e6)over=true;return}for(let i=st;i<n;i++){const d=Math.floor(cur/mul[i])%3;for(const v of marks[i]){if(v===d)continue;rec(cur+(v-d)*mul[i],i+1,left-1)}}};rec(codes[e],0,k)}
+    return over?null:cand};
+  let used=!!inside,cand=build(used);if(!cand){used=true;cand=build(true)}if(!cand)throw new Error('too big');
+  const cc=[...cand.keys()],CV=cc.map(y=>Int32Array.from(cand.get(y))),E=codes.length,tmp=Array.from({length:E},()=>[]);CV.forEach((l,j)=>{for(let i=0;i<l.length;i++)tmp[l[i]].push(j)});const inv=tmp.map(a=>Int32Array.from(a));
+  const M=cc.length,w=new Int32Array(E).fill(1),cov=new Int32Array(E),inS=new Uint8Array(M),score=new Float64Array(M),st=new Float64Array(M),can=new Uint8Array(M).fill(1),sol=[],pos=new Int32Array(M).fill(-1),unc=[],up=new Int32Array(E).fill(-1);
+  let s=(seed>>>0)||1;const rnd=m=>{s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return s%m};
+  const ua=e=>{up[e]=unc.length;unc.push(e)},ud=e=>{const i=up[e],l=unc.pop();if(l!==e){unc[i]=l;up[l]=i}up[e]=-1};for(let e=0;e<E;e++)ua(e);CV.forEach((l,j)=>score[j]=l.length);
+  const add=c=>{inS[c]=1;pos[c]=sol.length;sol.push(c);score[c]=-score[c];const l=CV[c];for(let q=0;q<l.length;q++){const e=l[q],we=w[e],iv=inv[e];if(cov[e]===0){ud(e);for(let t=0;t<iv.length;t++){const d=iv[t];if(d!==c){score[d]-=we;can[d]=1}}}else if(cov[e]===1){for(let t=0;t<iv.length;t++){const d=iv[t];if(inS[d]&&d!==c){score[d]+=we;break}}}cov[e]++}};
+  const del=c=>{inS[c]=0;const i0=pos[c],l0=sol.pop();if(l0!==c){sol[i0]=l0;pos[l0]=i0}pos[c]=-1;score[c]=-score[c];can[c]=0;const l=CV[c];for(let q=0;q<l.length;q++){const e=l[q],we=w[e],iv=inv[e];cov[e]--;if(cov[e]===0){ua(e);for(let t=0;t<iv.length;t++){const d=iv[t];if(d!==c){score[d]+=we;can[d]=1}}}else if(cov[e]===1){for(let t=0;t<iv.length;t++){const d=iv[t];if(inS[d]){score[d]-=we;break}}}}};
+  while(unc.length){const e=unc[rnd(unc.length)],iv=inv[e];let bc=-1,bs=-1;for(let t=0;t<iv.length;t++){const d=iv[t];if(score[d]>bs||(score[d]===bs&&rnd(2))){bs=score[d];bc=d}}add(bc)}
+  let best=sol.slice(),it=0,tabu=-1;const end=Date.now()+ms;
+  const pick=()=>{let bc=-1,bs=-Infinity,bt=Infinity;for(let i=0;i<sol.length;i++){const c=sol[i];if(c===tabu)continue;const sc=score[c];if(sc>bs||(sc===bs&&st[c]<bt)){bc=c;bs=sc;bt=st[c]}}return bc};
+  while(sol.length>0){if(!(++it&63)&&Date.now()>=end)break;if(!unc.length){best=sol.slice();if(sol.length<=1)break;del(pick());continue}if(sol.length<1)break;const r=pick();if(r<0)break;del(r);st[r]=it;const e=unc[rnd(unc.length)],iv=inv[e];let bc=-1,bs=-1,bt=Infinity;for(let t=0;t<iv.length;t++){const d=iv[t];if(!can[d])continue;const sc=score[d];if(sc>bs||(sc===bs&&st[d]<bt)){bc=d;bs=sc;bt=st[d]}}if(bc<0)bc=iv[rnd(iv.length)];add(bc);st[bc]=it;tabu=bc;for(let i=0;i<unc.length;i++){const x=unc[i];w[x]++;const v=inv[x];for(let t=0;t<v.length;t++)score[v[t]]++}}
+  const str=y=>{let o='',x=y;for(let i=0;i<n;i++){o+=SG[x%3];x=Math.floor(x/3)}return o},out=best.map(j=>str(cc[j]));
+  let worst=0;for(const t of T){let b=n;for(const c of out){let f=0;for(let i=0;i<n;i++)if(t[i]!==c[i])f++;if(f<b){b=f;if(b===0)break}}if(b>worst)worst=b}
+  return {cols:out,total:T.length,worst,ok:worst<=k,inside:used,forcedInside:used&&!inside};
+}
+function job({radices,k,ms,seed,w,budget,target,cond}){
+  if(cond)return condReduce(cond.cols,k,ms,seed,cond.inside);
   if(budget){const x=budgetSearch(radices,k,budget,w,ms,seed||7);return {...x,budget:true,p14:score(x.cols,radices,w)}}
   if(target){const x=budgetSearch(radices,k,0,w,ms,seed||7,target);return {...x,budget:true,target,p14:score(x.cols,radices,w)}}
   const x=run(radices,k,ms,seed);if(!w)return x;
   const cols=bestLabels(x.cols,radices,w);return {cols,ver:verify(radices,k,cols),p14:score(cols,radices,w)};
 }
 if(typeof self!=='undefined'&&self.postMessage&&typeof window==='undefined'){self.onmessage=e=>{try{self.postMessage({ok:true,...job(e.data)})}catch(err){self.postMessage({ok:false,error:String(err)})}}}
-if(typeof module!=='undefined')module.exports={run,verify,rwls,job,bestLabels,budgetSearch,score};
+if(typeof module!=='undefined')module.exports={run,verify,rwls,job,bestLabels,budgetSearch,score,condReduce};

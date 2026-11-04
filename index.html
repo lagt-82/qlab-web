@@ -1,12 +1,16 @@
-<!doctype html><html lang="es"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Quiniela Lab: calculadora de dobles y triples para La Quiniela</title><meta name="description" content="Prepara tu boleto de La Quiniela gratis: probabilidades según las cuotas, reparto de dobles y triples por presupuesto, coste e historial de jornadas."><link rel="canonical" id="canon" href="https://qlab-web.pages.dev/"><link rel="alternate" hreflang="es" href="https://qlab-web.pages.dev/?lang=es"><link rel="alternate" hreflang="en" href="https://qlab-web.pages.dev/?lang=en"><link rel="alternate" hreflang="x-default" href="https://qlab-web.pages.dev/"><meta property="og:title" content="Quiniela Lab: calculadora de dobles y triples"><meta property="og:description" content="Reparte dobles y triples según tu presupuesto y mira la probabilidad de tu boleto de La Quiniela."><meta property="og:url" content="https://qlab-web.pages.dev/"><meta property="og:type" content="website"><meta property="og:image" content="https://qlab-web.pages.dev/icon-192.png"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#15211c"></head><body>
+<!doctype html><html lang="es"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Quiniela Lab: calculadora de dobles y triples para La Quiniela</title><meta name="description" content="Prepara tu boleto de La Quiniela gratis: probabilidades según las cuotas, reparto de dobles y triples por presupuesto, coste e historial de jornadas."><link rel="canonical" id="canon" href="https://qlab-web.pages.dev/"><link rel="alternate" hreflang="es" href="https://qlab-web.pages.dev/?lang=es"><link rel="alternate" hreflang="en" href="https://qlab-web.pages.dev/?lang=en"><link rel="alternate" hreflang="x-default" href="https://qlab-web.pages.dev/"><meta property="og:title" content="Quiniela Lab: calculadora de dobles y triples"><meta property="og:description" content="Reparte dobles y triples según tu presupuesto y mira la probabilidad de tu boleto de La Quiniela."><meta property="og:url" content="https://qlab-web.pages.dev/"><meta property="og:type" content="website"><meta property="og:image" content="https://qlab-web.pages.dev/icon-192.png"><link rel="preload" href="fonts/Inter-Regular.woff" as="font" type="font/woff" crossorigin><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#15211c"></head><body>
 <style>
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/Inter-Regular.woff) format("woff")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/Inter-Medium.woff) format("woff")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/Inter-SemiBold.woff) format("woff")}
+@font-face{font-family:"Inter Display";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/InterDisplay-Bold.woff) format("woff")}
 /* Layout: boleto vertical — 14 filas con casillas 1·X·2, panel de pleno y distribución de aciertos debajo */
 :root{
   --paper:#f3f5f4; --surface:#ffffff; --ink:#15211c; --muted:#5d6b65; --grid:#d3dbd7; --grid-strong:#b5c1bb;
   --c1:#c4122f; --cx:#9aa7a1; --c2:#1d5f8e; --on1:#ffffff; --onx:#15211c; --hit:#1f8a4c; --miss:#c4122f;
-  --f-display:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;
-  --f-body:system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --f-display:"Inter Display","Inter",system-ui,sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Inter",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#0d1411; --surface:#141e19; --ink:#e4ebe7; --muted:#93a39b; --grid:#26332d; --grid-strong:#3a4a42;
@@ -228,6 +232,42 @@ h1{display:flex;align-items:center;gap:.16em;white-space:nowrap;font-size:clamp(
 @media (prefers-reduced-motion:reduce){.lg,.lgt,.tc.stamp,.ticket.enter .tc,.cv-line.draw{animation:none}.tc,.col .bv{transition:none}}.calc-c:disabled{opacity:.35;cursor:not-allowed}
 .noshop{margin:8px 0 10px;padding:7px 10px;border:1px solid var(--grid-strong);border-radius:4px;background:var(--surface);font-size:14px;line-height:1.35}
 @media (prefers-reduced-motion:reduce){.bar span{transition:none}}
+
+/* Lectura e interfaz */
+html{-webkit-text-size-adjust:100%}
+body{font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-feature-settings:"kern","liga","calt";font-variant-numeric:tabular-nums}
+:root{--muted:#4b5852}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--muted:#a9b6af}}
+:root[data-theme="dark"]{--muted:#a9b6af}
+.wrap{gap:24px;max-width:1120px}
+h1{font-weight:700;text-transform:none;letter-spacing:-.025em;line-height:1;margin:8px 0 10px}
+h2{font-size:clamp(22px,3vw,27px);line-height:1.15;text-transform:none;letter-spacing:-.015em;margin:0 0 6px}
+.lead{font-size:16px;line-height:1.5;margin:0 0 12px;max-width:62ch}.eyebrow{font-size:14px;font-weight:500}
+.sub{font-size:15px;line-height:1.5;margin:0 0 14px}.noshop{font-size:15px;padding:10px 12px;border-radius:6px}.top{border-bottom-width:2px;padding-bottom:20px}
+.stat .k{font-size:13px;font-weight:500}.stat .v{font-size:clamp(28px,3.2vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.1}.stat .s{font-size:13px;line-height:1.35}
+#jname{font-size:17px;font-weight:600;color:var(--ink)}.stamp{font-size:13px}
+.panel{border-radius:8px;padding:22px}.board{border-radius:8px}
+.tools{background:var(--surface);border:1px solid var(--grid);border-radius:8px;padding:16px 18px;gap:12px 16px}
+.tools label{font-size:14px;font-weight:500}.tools select,#b-eur{min-height:40px;font-size:15px;border-radius:6px;font-family:var(--f-body)}
+.btn{min-height:40px;padding:8px 14px;border-radius:6px;font-size:14px;transition:background-color .15s,border-color .15s,color .15s}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary:hover{background:var(--c1);border-color:var(--c1);color:var(--on1)}
+.toast,.alloc-msg{font-size:14px}.limit-warn{font-size:14px}
+details.settings>summary,details.edit>summary{font-size:14px;min-height:32px;display:flex;align-items:center;gap:4px;color:var(--ink)}
+details.settings>summary::before,details.edit>summary::before{white-space:pre}
+.field{font-size:13px;font-weight:500;gap:5px}.field input,.field select{min-height:40px;font-size:15px;border-radius:6px;font-family:var(--f-body)}legend{font-size:13px}
+.head{font-size:13px;letter-spacing:0;text-transform:none;font-weight:500;padding:10px 16px}.row{padding:14px 16px;gap:8px 16px;align-items:center}
+.num{font-size:22px;font-weight:700;align-self:center}.tn{font-family:var(--f-body);font-size:18px;font-weight:600;letter-spacing:-.01em}.xg{font-size:13px}
+.mk{font-size:13px;line-height:1.4}.bar{height:30px;border-radius:5px;gap:2px}.bar span{font-size:13px;font-weight:600}
+.sg{border-radius:6px;font-size:18px;font-weight:600;transition:background-color .12s,color .12s,border-color .12s}.fi-s{font-size:13px}.fc{width:18px;height:18px;font-size:11px}
+.calc-c{font-size:14px;border-radius:5px;font-weight:600}.calc-c small{font-size:12px;font-weight:400;display:block}.calc-t th{font-size:13px}
+.prizes{font-size:14px}.col .pv{font-size:12px}.axis span{font-size:12px}.plabel{font-size:14px}.pgrid th{font-size:13px}.cell{font-size:13px;border-radius:5px}
+.comps{font-size:14px;gap:12px}.comp-g legend{font-size:13px}.evt{font-size:14px}.evt small{font-size:13px}.picks{font-size:14px}.sync-log{font-size:14px}
+.review{font-size:15px}.method{font-size:15px;line-height:1.6}.formula{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-size:13px;border-radius:6px}
+#copyout{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}.tn-h,.ts-h{font-size:12px}.tc{font-family:var(--f-body);font-size:14px;border-radius:4px}
+.cv-t{font-size:12px}.cv-l{font-size:13px}.curve-t{font-size:14px}.hist-sum{font-family:var(--f-display);font-weight:700;letter-spacing:-.015em}.rg .k{font-size:13px}.rg .v{font-weight:700}.lang{min-height:36px;font-size:13px;border-radius:6px}
+@media (max-width:640px){.num{align-self:start}}
+.has-live .sync{order:1}.has-live .calc{order:2}.has-live .method{order:3}
+@media (max-width:640px){.panel{padding:16px}.tools{padding:14px}.row{padding:12px}.tn{font-size:17px}.tc{font-size:12px}.tn-h,.ts-h{font-size:11px}}
 </style>
 
 <div class="wrap">
@@ -306,18 +346,6 @@ h1{display:flex;align-items:center;gap:.16em;white-space:nowrap;font-size:clamp(
     <span data-th="demoNote"><strong>Ejemplo con datos inventados.</strong> Estos equipos y cuotas no existen: no los uses para jugar.</span>
     <button class="btn" id="b-real" data-t="realBtn">Usar partidos reales</button>
   </div>
-
-  <section class="panel calc" aria-labelledby="calc-h">
-    <h2 id="calc-h" data-t="calcH">Calculadora de dobles y triples</h2>
-    <p class="sub" data-t="calcP">Cada doble multiplica las apuestas por 2 y cada triple, por 3. Elige una combinación o pulsa una casilla de la tabla.</p>
-    <div class="calc-top">
-      <label class="field" for="c-tri"><span data-t="triples">Triples</span><select id="c-tri"></select></label>
-      <label class="field" for="c-dob"><span data-t="doubles">Dobles</span><select id="c-dob"></select></label>
-      <div class="calc-res" aria-live="polite"><div class="v" id="c-bets"></div><div class="s" id="c-det"></div></div>
-      <button class="btn primary" id="c-apply" data-t="applyBtn">Aplicar al boleto</button>
-    </div>
-    <div class="calc-wrap"><table class="calc-t" id="c-table"></table></div>
-  </section>
 
   <section class="panel sync" id="sync" aria-labelledby="sync-h" hidden>
     <h2 id="sync-h" data-t="syncH">Datos en línea</h2>
@@ -411,6 +439,18 @@ h1{display:flex;align-items:center;gap:.16em;white-space:nowrap;font-size:clamp(
       <div class="axis" id="axis"></div>
       <table class="prizes" id="prizes"></table>
     </div>
+  </section>
+
+  <section class="panel calc" aria-labelledby="calc-h">
+    <h2 id="calc-h" data-t="calcH">Calculadora de dobles y triples</h2>
+    <p class="sub" data-t="calcP">Cada doble multiplica las apuestas por 2 y cada triple, por 3. Elige una combinación o pulsa una casilla de la tabla.</p>
+    <div class="calc-top">
+      <label class="field" for="c-tri"><span data-t="triples">Triples</span><select id="c-tri"></select></label>
+      <label class="field" for="c-dob"><span data-t="doubles">Dobles</span><select id="c-dob"></select></label>
+      <div class="calc-res" aria-live="polite"><div class="v" id="c-bets"></div><div class="s" id="c-det"></div></div>
+      <button class="btn primary" id="c-apply" data-t="applyBtn">Aplicar al boleto</button>
+    </div>
+    <div class="calc-wrap"><table class="calc-t" id="c-table"></table></div>
   </section>
 
   <section class="method">
@@ -762,6 +802,7 @@ function allocate(sorted,maxBets,goal){
 const DEMO=[['Río Verde','Costa Azul',1.80,3.60,4.50],['Sierra Alta','Puerto Viejo',2.50,3.20,2.90],['Valle Norte','Atlético Faro',1.45,4.40,7.50],['Unión Lago','Real Pinar',3.40,3.30,2.15],['Monte Claro','Bahía FC',2.10,3.30,3.60],['Deportivo Sol','Las Dunas',6.50,4.20,1.50],['Villa Roble','Campo Nuevo',2.05,3.40,3.70],['Racing Sur','Isla Blanca',2.80,3.10,2.70],['Cerro Grande','Olímpico Mar',1.60,4.00,5.50],['Peña Dorada','Ribera CF',3.10,3.20,2.35],['Atlético Brisa','Torre Vieja',2.25,3.20,3.30],['Las Encinas','Sporting Luna',4.20,3.60,1.85],['Nueva Aurora','Vega Alta',1.95,3.50,4.00],['Santa Olaya','Puente Real',2.65,3.10,2.85],['Ciudad Jardín','Estrella Roja',2.20,3.40,3.20]];
 const demoM=(d,i,pl)=>Object.assign({h:d[0],a:d[1],hs:[0,0,0,0],as:[0,0,0,0],sel:'',odds:[d[2],d[3],d[4]].map(x=>x.toFixed(2)),mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:''},pl?{resH:'',resA:''}:{res:''});
 function renderStart(){
+  d0.body.classList.toggle('has-live',!!S.demo||liveMatches().length>0);
   const hasOdds=S.matches.concat([S.pleno]).some(m=>m.odds&&m.odds.some(Boolean));
   $('startbox').hidden=!!S.demo||hasOdds;
   $('demonote').hidden=!S.demo;
@@ -1066,7 +1107,7 @@ $('h-limit').addEventListener('change',e=>{try{localStorage.setItem('qlab-limit'
 /* Imagen para compartir */
 function ticketImage(){
   const W=1080,n=S.matches.length,pleno=F().pleno,rows=n+(pleno?1:0),H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;
-  const x=cv.getContext('2d'),F0='system-ui,-apple-system,"Segoe UI",sans-serif',M=64;
+  const x=cv.getContext('2d'),F0='Inter,system-ui,-apple-system,"Segoe UI",sans-serif',M=64;
   x.fillStyle='#15211c';x.fillRect(0,0,W,H);
   x.textBaseline='alphabetic';x.font=`700 76px ${F0}`;x.fillStyle='#fff';x.fillText('Quiniela',M,120);const qw=x.measureText('Quiniela ').width;x.fillStyle='#ff4d67';x.fillText('Lab',M+qw,120);
   const fit=(t,w)=>{t=String(t);if(x.measureText(t).width<=w)return t;while(t.length>1&&x.measureText(t+'…').width>w)t=t.slice(0,-1);return t+'…'};

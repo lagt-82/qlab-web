@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora de dobles y triples de La Quiniela | Quiniela Lab</title><meta name="description" content="Calcula cuántas apuestas y cuánto cuesta una quiniela con dobles y triples, con la fórmula y una tabla de combinaciones."><link rel="canonical" href="https://qlab-web.pages.dev/calculadora-dobles-triples/"><link rel="alternate" hreflang="es" href="https://qlab-web.pages.dev/calculadora-dobles-triples/"><link rel="alternate" hreflang="en" href="https://qlab-web.pages.dev/en/doubles-triples-calculator/">
+<meta property="og:title" content="Calculadora de dobles y triples de La Quiniela | Quiniela Lab"><meta property="og:description" content="Calcula cuántas apuestas y cuánto cuesta una quiniela con dobles y triples, con la fórmula y una tabla de combinaciones."><meta property="og:url" content="https://qlab-web.pages.dev/calculadora-dobles-triples/"><meta property="og:type" content="article"><meta property="og:image" content="https://qlab-web.pages.dev/icon-192.png">
+<link rel="icon" href="/icon-192.png"><link rel="stylesheet" href="/guias.css"><meta name="theme-color" content="#15211c"></head>
+<body><main class="g">
+<a class="brand" href="/">Quiniela <em>Lab</em></a>
+
+<h1>Calculadora de dobles y triples de La Quiniela</h1>
+<p class="lead">Elige cuántos dobles y triples quieres marcar y mira cuántas apuestas salen y cuánto cuestan.</p>
+<section class="box" aria-label="Calculadora">
+<div class="f"><label for="t">Triples<input id="t" type="number" min="0" max="14" value="1" inputmode="numeric"></label><label for="d">Dobles<input id="d" type="number" min="0" max="14" value="1" inputmode="numeric"></label><label for="p">Euros por apuesta<input id="p" value="0,75" inputmode="decimal"></label></div>
+<p class="res" id="r" aria-live="polite"></p>
+</section>
+<h2>Cómo se calcula</h2>
+<p>Cada doble multiplica las apuestas por 2 y cada triple, por 3. La fórmula es <strong>apuestas = 3<sup>triples</sup> × 2<sup>dobles</sup></strong>. El coste es el número de apuestas por el precio de cada una.</p>
+<p>Por ejemplo, con 2 triples y 3 dobles salen 3 × 3 × 2 × 2 × 2 = 72 apuestas. A 0,75 € por apuesta, cuestan 54,00 €.</p>
+<h2>Tabla de apuestas</h2>
+<p>Filas: triples. Columnas: dobles.</p>
+<div class="tw"><table><thead><tr><th scope="col">T \ D</th><th scope="col">0</th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th><th scope="col">5</th><th scope="col">6</th></tr></thead><tbody><tr><th scope="row">0</th><td>1</td><td>2</td><td>4</td><td>8</td><td>16</td><td>32</td><td>64</td></tr><tr><th scope="row">1</th><td>3</td><td>6</td><td>12</td><td>24</td><td>48</td><td>96</td><td>192</td></tr><tr><th scope="row">2</th><td>9</td><td>18</td><td>36</td><td>72</td><td>144</td><td>288</td><td>576</td></tr><tr><th scope="row">3</th><td>27</td><td>54</td><td>108</td><td>216</td><td>432</td><td>864</td><td>1.728</td></tr><tr><th scope="row">4</th><td>81</td><td>162</td><td>324</td><td>648</td><td>1.296</td><td>2.592</td><td>5.184</td></tr></tbody></table></div>
+<h2>Dónde colocar los dobles y triples</h2>
+<p>La tabla dice cuánto cuesta una combinación, pero no dónde colocarla. En <a href="/">Quiniela Lab</a> puedes indicar un presupuesto y ver un reparto según la probabilidad que implican las cuotas. Más probabilidad de acertar no significa más premio esperado.</p>
+<p><a class="cta" href="/">Abrir Quiniela Lab</a></p>
+<p>Consulta también <a href="/cuanto-cuesta-quiniela/">cuánto cuesta una quiniela</a>.</p>
+<p class="note">Quiniela Lab es una herramienta informativa: no vende boletos, no acepta apuestas ni dinero, no garantiza aciertos ni premios y no tiene relación con Loterías y Apuestas del Estado. Solo para mayores de 18 años. Juega con responsabilidad.</p><script>(function(){var q=function(i){return document.getElementById(i)},loc=document.documentElement.lang==='en'?'en-GB':'es-ES';function u(){var t=+q('t').value||0,d=+q('d').value||0,p=parseFloat(String(q('p').value).replace(',','.'))||0,b=Math.pow(3,t)*Math.pow(2,d);q('r').textContent=b.toLocaleString(loc)+' '+(loc==='en-GB'?(b===1?'line':'lines'):(b===1?'apuesta':'apuestas'))+' · '+(b*p).toLocaleString(loc,{minimumFractionDigits:2,maximumFractionDigits:2})+(loc==='en-GB'?'':' €')}['t','d','p'].forEach(function(i){q(i).addEventListener('input',u)});u()})();</script>
+</main>
+<script>if(location.hostname==='qlab-web.pages.dev'){var cfa=document.createElement('script');cfa.defer=true;cfa.src='https://static.cloudflareinsights.com/beacon.min.js';cfa.setAttribute('data-cf-beacon','{"token":"2de3b0685c6c4119abc2e709d394ed60"}');document.body.appendChild(cfa)}</script>
+</body></html>

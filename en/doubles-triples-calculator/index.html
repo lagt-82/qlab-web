@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Doubles and triples calculator for 1X2 football pools | Quiniela Lab</title><meta name="description" content="Work out how many lines and how much a 1X2 football pools ticket costs with doubles and triples, with the formula and a lines table."><link rel="canonical" href="https://qlab-web.pages.dev/en/doubles-triples-calculator/"><link rel="alternate" hreflang="es" href="https://qlab-web.pages.dev/calculadora-dobles-triples/"><link rel="alternate" hreflang="en" href="https://qlab-web.pages.dev/en/doubles-triples-calculator/">
+<meta property="og:title" content="Doubles and triples calculator for 1X2 football pools | Quiniela Lab"><meta property="og:description" content="Work out how many lines and how much a 1X2 football pools ticket costs with doubles and triples, with the formula and a lines table."><meta property="og:url" content="https://qlab-web.pages.dev/en/doubles-triples-calculator/"><meta property="og:type" content="article"><meta property="og:image" content="https://qlab-web.pages.dev/icon-192.png">
+<link rel="icon" href="/icon-192.png"><link rel="stylesheet" href="/guias.css"><meta name="theme-color" content="#15211c"></head>
+<body><main class="g">
+<a class="brand" href="/?lang=en">Quiniela <em>Lab</em></a>
+
+<h1>Doubles and triples calculator for 1X2 football pools</h1>
+<p class="lead">Choose how many doubles and triples you want to mark and see the number of lines and the cost.</p>
+<section class="box" aria-label="Calculator">
+<div class="f"><label for="t">Triples<input id="t" type="number" min="0" max="20" value="1" inputmode="numeric"></label><label for="d">Doubles<input id="d" type="number" min="0" max="20" value="1" inputmode="numeric"></label><label for="p">Price per line<input id="p" value="1.00" inputmode="decimal"></label></div>
+<p class="res" id="r" aria-live="polite"></p>
+</section>
+<h2>How it works</h2>
+<p>Each double multiplies the lines by 2 and each triple by 3: <strong>lines = 3<sup>triples</sup> × 2<sup>doubles</sup></strong>. The cost is the number of lines multiplied by the price per line.</p>
+<p>For example, 2 triples and 3 doubles make 3 × 3 × 2 × 2 × 2 = 72 lines. At 1.00 per line, that costs 72.00.</p>
+<h2>Lines table</h2>
+<p>Rows: triples. Columns: doubles.</p>
+<div class="tw"><table><thead><tr><th scope="col">T \ D</th><th scope="col">0</th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th><th scope="col">5</th><th scope="col">6</th></tr></thead><tbody><tr><th scope="row">0</th><td>1</td><td>2</td><td>4</td><td>8</td><td>16</td><td>32</td><td>64</td></tr><tr><th scope="row">1</th><td>3</td><td>6</td><td>12</td><td>24</td><td>48</td><td>96</td><td>192</td></tr><tr><th scope="row">2</th><td>9</td><td>18</td><td>36</td><td>72</td><td>144</td><td>288</td><td>576</td></tr><tr><th scope="row">3</th><td>27</td><td>54</td><td>108</td><td>216</td><td>432</td><td>864</td><td>1,728</td></tr><tr><th scope="row">4</th><td>81</td><td>162</td><td>324</td><td>648</td><td>1,296</td><td>2,592</td><td>5,184</td></tr></tbody></table></div>
+<h2>Place them where they matter</h2>
+<p>The table shows what a combination costs, not where to put it. <a href="/?lang=en">Quiniela Lab</a> lets you set a budget and see an allocation based on odds-implied probabilities. A higher chance of getting matches right doesn’t mean a higher expected prize.</p>
+<p><a class="cta" href="/?lang=en">Open Quiniela Lab</a></p>
+<p class="note">Quiniela Lab is an information tool: it doesn’t sell tickets or take bets or money, doesn’t guarantee hits or prizes and isn’t affiliated with any lottery or pools operator. Adults only (18+ or the legal age in your country). Check whether pools are legal where you live, and play responsibly.</p><script>(function(){var q=function(i){return document.getElementById(i)},loc=document.documentElement.lang==='en'?'en-GB':'es-ES';function u(){var t=+q('t').value||0,d=+q('d').value||0,p=parseFloat(String(q('p').value).replace(',','.'))||0,b=Math.pow(3,t)*Math.pow(2,d);q('r').textContent=b.toLocaleString(loc)+' '+(loc==='en-GB'?(b===1?'line':'lines'):(b===1?'apuesta':'apuestas'))+' · '+(b*p).toLocaleString(loc,{minimumFractionDigits:2,maximumFractionDigits:2})+(loc==='en-GB'?'':' €')}['t','d','p'].forEach(function(i){q(i).addEventListener('input',u)});u()})();</script>
+</main>
+<script>if(location.hostname==='qlab-web.pages.dev'){var cfa=document.createElement('script');cfa.defer=true;cfa.src='https://static.cloudflareinsights.com/beacon.min.js';cfa.setAttribute('data-cf-beacon','{"token":"2de3b0685c6c4119abc2e709d394ed60"}');document.body.appendChild(cfa)}</script>
+</body></html>

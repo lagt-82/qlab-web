@@ -379,13 +379,13 @@ details.settings>summary::before,details.edit>summary::before{white-space:pre}
     <label class="field" for="s-cols"><span data-t="scCols">Columnas, una por línea</span><textarea id="s-cols" rows="5" spellcheck="false" style="width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--grid-strong);border-radius:4px;padding:8px;font-family:var(--f-mono);font-size:14px;color:var(--ink)"></textarea></label>
     <details class="sc-cond" style="margin-top:12px"><summary data-t="ccH" style="cursor:pointer;font-weight:600;color:var(--ink);min-height:32px">Condiciones</summary>
       <p class="sub" data-t="ccP">Quita columnas y mira cuánto ahorras y cuánta probabilidad pierdes. Filtrar suele romper la garantía.</p>
-      <div class="hist-f" id="c-grid">
-        <label class="field sm" for="c-1a"><span data-t="cc1a">Mín. de 1</span><input id="c-1a" type="number" min="0" inputmode="numeric"></label><label class="field sm" for="c-1b"><span data-t="cc1b">Máx. de 1</span><input id="c-1b" type="number" min="0" inputmode="numeric"></label>
-        <label class="field sm" for="c-xa"><span data-t="ccxa">Mín. de X</span><input id="c-xa" type="number" min="0" inputmode="numeric"></label><label class="field sm" for="c-xb"><span data-t="ccxb">Máx. de X</span><input id="c-xb" type="number" min="0" inputmode="numeric"></label>
-        <label class="field sm" for="c-2a"><span data-t="cc2a">Mín. de 2</span><input id="c-2a" type="number" min="0" inputmode="numeric"></label><label class="field sm" for="c-2b"><span data-t="cc2b">Máx. de 2</span><input id="c-2b" type="number" min="0" inputmode="numeric"></label>
-        <label class="field md" for="c-top"><span data-t="ccTop">Las N más probables</span><input id="c-top" type="number" min="1" inputmode="numeric"></label>
+      <div class="hist-f" id="cc-grid">
+        <label class="field sm" for="cc-1a"><span data-t="cc1a">Mín. de 1</span><input id="cc-1a" type="number" min="0" inputmode="numeric"></label><label class="field sm" for="cc-1b"><span data-t="cc1b">Máx. de 1</span><input id="cc-1b" type="number" min="0" inputmode="numeric"></label>
+        <label class="field sm" for="cc-xa"><span data-t="ccxa">Mín. de X</span><input id="cc-xa" type="number" min="0" inputmode="numeric"></label><label class="field sm" for="cc-xb"><span data-t="ccxb">Máx. de X</span><input id="cc-xb" type="number" min="0" inputmode="numeric"></label>
+        <label class="field sm" for="cc-2a"><span data-t="cc2a">Mín. de 2</span><input id="cc-2a" type="number" min="0" inputmode="numeric"></label><label class="field sm" for="cc-2b"><span data-t="cc2b">Máx. de 2</span><input id="cc-2b" type="number" min="0" inputmode="numeric"></label>
+        <label class="field md" for="cc-top"><span data-t="ccTop">Las N más probables</span><input id="cc-top" type="number" min="1" inputmode="numeric"></label>
       </div>
-      <div class="hist-f"><button class="btn" id="s-dev" data-t="ccDev">Desarrollar mis signos</button><button class="btn" id="c-apply" data-t="ccApply">Aplicar condiciones</button><button class="btn" id="c-undo" data-t="ccUndo" hidden>Deshacer</button></div>
+      <div class="hist-f"><button class="btn" id="s-dev" data-t="ccDev">Desarrollar mis signos</button><button class="btn" id="cc-apply" data-t="ccApply">Aplicar condiciones</button><button class="btn" id="cc-undo" data-t="ccUndo" hidden>Deshacer</button></div>
     </details>
     <div class="hist-f" style="margin-top:12px">
       <label class="field wide" for="s-res"><span data-t="scRes">Resultado (opcional; usa - en los partidos sin terminar)</span><input id="s-res" autocomplete="off" spellcheck="false" style="width:100%;box-sizing:border-box"></label>
@@ -1282,15 +1282,15 @@ $('s-csv').addEventListener('click',()=>{if(!scLast)return;const head=T('redCol'
 /* Condiciones */
 let ccPrev=null;
 const ccProb=c=>{const ps=S.matches.map(m=>model(m).p);return [...c].reduce((a,x,i)=>a*ps[i][x],1)};
-$('s-dev').addEventListener('click',()=>{$('s-msg').classList.remove('err');$('s-msg').textContent='';if(S.matches.some(m=>!m.sel)){scErr(T('ccNoSel'));return}const tot=S.matches.reduce((a,m)=>a*m.sel.length,1);if(tot>20000){scErr(T('redTooBig',nf(tot)));return}let cs=[''];for(const m of S.matches){const nx=[];for(const c of cs)for(const x of m.sel)nx.push(c+x);cs=nx}ccPrev=$('s-cols').value;$('s-cols').value=cs.join('\n');$('c-undo').hidden=false;scClear()});
-$('c-undo').addEventListener('click',()=>{if(ccPrev==null)return;$('s-cols').value=ccPrev;ccPrev=null;$('c-undo').hidden=true;scClear();$('s-msg').textContent='';$('s-msg').classList.remove('err')});
-$('c-apply').addEventListener('click',()=>{$('s-msg').classList.remove('err');$('s-msg').textContent='';const n=S.matches.length,parsed=scParse($('s-cols').value,n);if(parsed.bad){scErr(T('scBadLine',parsed.bad,n));return}if(!parsed.cols||!parsed.cols.length){scErr(T('ccNoCols'));return}
-  const all=[...new Set(parsed.cols)],lim=id=>{const v=$(id).value.trim();return v===''?null:+v},L={1:[lim('c-1a'),lim('c-1b')],X:[lim('c-xa'),lim('c-xb')],2:[lim('c-2a'),lim('c-2b')]},top=lim('c-top');
+$('s-dev').addEventListener('click',()=>{$('s-msg').classList.remove('err');$('s-msg').textContent='';if(S.matches.some(m=>!m.sel)){scErr(T('ccNoSel'));return}const tot=S.matches.reduce((a,m)=>a*m.sel.length,1);if(tot>20000){scErr(T('redTooBig',nf(tot)));return}let cs=[''];for(const m of S.matches){const nx=[];for(const c of cs)for(const x of m.sel)nx.push(c+x);cs=nx}ccPrev=$('s-cols').value;$('s-cols').value=cs.join('\n');$('cc-undo').hidden=false;scClear()});
+$('cc-undo').addEventListener('click',()=>{if(ccPrev==null)return;$('s-cols').value=ccPrev;ccPrev=null;$('cc-undo').hidden=true;scClear();$('s-msg').textContent='';$('s-msg').classList.remove('err')});
+$('cc-apply').addEventListener('click',()=>{$('s-msg').classList.remove('err');$('s-msg').textContent='';const n=S.matches.length,parsed=scParse($('s-cols').value,n);if(parsed.bad){scErr(T('scBadLine',parsed.bad,n));return}if(!parsed.cols||!parsed.cols.length){scErr(T('ccNoCols'));return}
+  const all=[...new Set(parsed.cols)],lim=id=>{const v=$(id).value.trim();return v===''?null:+v},L={1:[lim('cc-1a'),lim('cc-1b')],X:[lim('cc-xa'),lim('cc-xb')],2:[lim('cc-2a'),lim('cc-2b')]},top=lim('cc-top');
   let kept=all.filter(c=>['1','X','2'].every(s=>{const k=[...c].filter(x=>x===s).length,[a,b]=L[s];return (a==null||k>=a)&&(b==null||k<=b)}));
   if(top!=null&&top>=1)kept=kept.map(c=>[c,ccProb(c)]).sort((a,b)=>b[1]-a[1]).slice(0,Math.floor(top)).map(x=>x[0]);
   if(!kept.length){scClear();scErr(T('ccNone'));return}
   const pa=all.reduce((a,c)=>a+ccProb(c),0),pk=kept.reduce((a,c)=>a+ccProb(c),0),line=T('ccRes',nf(kept.length),nf(all.length),nf((1-kept.length/all.length)*100,0),nf(pa>0?pk/pa*100:0,1));
-  ccPrev=$('s-cols').value;$('s-cols').value=kept.join('\n');$('c-undo').hidden=false;scClear();ccLine=line;$('s-run').click()});
+  ccPrev=$('s-cols').value;$('s-cols').value=kept.join('\n');$('cc-undo').hidden=false;scClear();ccLine=line;$('s-run').click()});
 let ccLine='';
 /* Imagen para compartir */
 function ticketImage(){

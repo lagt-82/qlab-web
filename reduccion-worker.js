@@ -66,7 +66,7 @@ function bestLabels(cols,radices,w){
   return dg.map(d=>{let x=0,mul=1;for(let j=0;j<m;j++){x+=cur[j][d[j]]*mul;mul*=radices[j]}return x});
 }
 /* Máxima probabilidad cubierta con un número fijo de columnas. No da garantía. */
-function budgetSearch(radices,k,B,w,ms,seed){
+function budgetSearch(radices,k,B,w,ms,seed,target){
   const {N,size,B:L}=buildBalls(radices,k),wt=new Float64Array(N);for(let c=0;c<N;c++){let x=c,q=1;for(let j=0;j<radices.length;j++){const r=radices[j];q*=w[j][x%r];x=Math.floor(x/r)}wt[c]=q}
   let s=(seed>>>0)||1;const rnd=n=>{s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return s%n};
   const cov=new Int32Array(N),inS=new Uint8Array(N),gain=new Float64Array(N),loss=new Float64Array(N),stamp=new Float64Array(N),sol=[],bonus=.2;
@@ -74,8 +74,17 @@ function budgetSearch(radices,k,B,w,ms,seed){
   const put=c=>{inS[c]=1;sol.push(c);for(let i=c*size,a=i+size;i<a;i++)cov[L[i]]++},take=c=>{inS[c]=0;sol.splice(sol.indexOf(c),1);for(let i=c*size,a=i+size;i<a;i++)cov[L[i]]--};
   const bestAdd=lim=>{let bc=-1,bg=-1;for(let c=0;c<N;c++)if(!inS[c]&&stamp[c]<=lim&&gain[c]>bg){bg=gain[c];bc=c}return bc};
   const value=()=>{let v=0;for(let e=0;e<N;e++)if(cov[e])v+=wt[e];for(const c of sol)v+=bonus*wt[c];return v};
-  for(let i=0;i<Math.min(B,N);i++){recompute();put(bestAdd(0))}
+  const total=wt.reduce((a,b)=>a+b,0),share=()=>{let v=0;for(let e=0;e<N;e++)if(cov[e])v+=wt[e];return v/total};
+  if(target){while(share()<target&&sol.length<N){recompute();put(bestAdd(0))}B=sol.length}
+  else for(let i=0;i<Math.min(B,N);i++){recompute();put(bestAdd(0))}
   let best=sol.slice(),bv=value(),it=0;const end=Date.now()+ms;
+  if(target){let goal=sol.slice();while(Date.now()<end&&sol.length>1){
+      recompute();let bc=-1,bl=Infinity;for(const c of sol)if(loss[c]<bl){bl=loss[c];bc=c}take(bc);
+      let found=share()>=target,last=Infinity;
+      while(!found&&Date.now()<end){it++;const n=1+rnd(3);for(let q=0;q<n&&sol.length;q++){recompute();let c0=-1,l0=Infinity;for(const c of sol){const l=loss[c]*(1+rnd(600)/1000);if(l<l0&&stamp[c]<it){l0=l;c0=c}}if(c0<0)c0=sol[rnd(sol.length)];take(c0);stamp[c0]=it+3}
+        for(let q=0;q<n;q++){recompute();let c1=bestAdd(it-1);if(c1<0)c1=bestAdd(Infinity);put(c1)}found=share()>=target}
+      if(found)goal=sol.slice();else break}
+    best=goal;B=N}
   while(Date.now()<end&&B<N){it++;const n=1+rnd(3);
     for(let q=0;q<n&&sol.length;q++){recompute();let bc=-1,bl=Infinity;for(const c of sol){const l=loss[c]*(1+rnd(600)/1000);if(l<bl&&stamp[c]<it){bl=l;bc=c}}if(bc<0)bc=sol[rnd(sol.length)];take(bc);stamp[bc]=it+3}
     for(let q=0;q<n;q++){recompute();let bc=bestAdd(it-1);if(bc<0)bc=bestAdd(Infinity);put(bc)}
@@ -89,8 +98,9 @@ function run(radices,k,ms,seed){
   let N=1;radices.forEach(r=>N*=r);if(k>=radices.length)return {cols:[0],ver:{ok:true,worst:radices.length,N}};
   const best=search(radices,k,ms,seed||7),ver=verify(radices,k,best);return {cols:best,ver};
 }
-function job({radices,k,ms,seed,w,budget}){
+function job({radices,k,ms,seed,w,budget,target}){
   if(budget){const x=budgetSearch(radices,k,budget,w,ms,seed||7);return {...x,budget:true,p14:score(x.cols,radices,w)}}
+  if(target){const x=budgetSearch(radices,k,0,w,ms,seed||7,target);return {...x,budget:true,target,p14:score(x.cols,radices,w)}}
   const x=run(radices,k,ms,seed);if(!w)return x;
   const cols=bestLabels(x.cols,radices,w);return {cols,ver:verify(radices,k,cols),p14:score(cols,radices,w)};
 }

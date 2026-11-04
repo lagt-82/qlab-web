@@ -1,4 +1,4 @@
-<!doctype html><html lang="es"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Quiniela Lab: calculadora de dobles y triples para La Quiniela</title><meta name="description" content="Prepara tu boleto de La Quiniela gratis: probabilidades según las cuotas, reparto de dobles y triples por presupuesto, coste e historial de jornadas."><link rel="canonical" href="https://qlab-web.pages.dev/"><meta property="og:title" content="Quiniela Lab: calculadora de dobles y triples"><meta property="og:description" content="Reparte dobles y triples según tu presupuesto y mira la probabilidad de tu boleto de La Quiniela."><meta property="og:url" content="https://qlab-web.pages.dev/"><meta property="og:type" content="website"><meta property="og:image" content="https://qlab-web.pages.dev/icon-192.png"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#15211c"></head><body>
+<!doctype html><html lang="es"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Quiniela Lab: calculadora de dobles y triples para La Quiniela</title><meta name="description" content="Prepara tu boleto de La Quiniela gratis: probabilidades según las cuotas, reparto de dobles y triples por presupuesto, coste e historial de jornadas."><link rel="canonical" id="canon" href="https://qlab-web.pages.dev/"><link rel="alternate" hreflang="es" href="https://qlab-web.pages.dev/?lang=es"><link rel="alternate" hreflang="en" href="https://qlab-web.pages.dev/?lang=en"><link rel="alternate" hreflang="x-default" href="https://qlab-web.pages.dev/"><meta property="og:title" content="Quiniela Lab: calculadora de dobles y triples"><meta property="og:description" content="Reparte dobles y triples según tu presupuesto y mira la probabilidad de tu boleto de La Quiniela."><meta property="og:url" content="https://qlab-web.pages.dev/"><meta property="og:type" content="website"><meta property="og:image" content="https://qlab-web.pages.dev/icon-192.png"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#15211c"></head><body>
 <style>
 /* Layout: boleto vertical — 14 filas con casillas 1·X·2, panel de pleno y distribución de aciertos debajo */
 :root{
@@ -203,136 +203,148 @@ h2{font-family:var(--f-display);font-size:24px;font-weight:700;text-transform:up
   .signs{justify-content:flex-start}
   .tn{font-size:19px}
 }
+.langs{display:flex;justify-content:flex-end;gap:4px;margin-bottom:-14px}.lang{min-width:44px;min-height:32px;background:var(--surface);border:1px solid var(--grid-strong);border-radius:4px;color:var(--ink);font-weight:600;font-size:12px;cursor:pointer}.lang[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}.lower.solo{grid-template-columns:1fr}.calc-c:disabled{opacity:.35;cursor:not-allowed}
 .noshop{margin:8px 0 10px;padding:7px 10px;border:1px solid var(--grid-strong);border-radius:4px;background:var(--surface);font-size:14px;line-height:1.35}
 @media (prefers-reduced-motion:reduce){.bar span{transition:none}}
 </style>
 
 <div class="wrap">
+  <div class="langs" role="group" aria-label="Idioma / Language"><button class="lang" data-lang="es" aria-pressed="false">ES</button><button class="lang" data-lang="en" aria-pressed="false">EN</button></div>
   <header class="top">
     <div>
-      <div class="eyebrow">Preparar el boleto · cuotas y modelo</div>
+      <div class="eyebrow" data-t="eyebrow">Preparar el boleto · cuotas y modelo</div>
       <h1>Quiniela <em>Lab</em></h1>
-      <p class="lead">Calculadora gratuita para preparar tu boleto de La Quiniela: probabilidad de cada signo según las cuotas, reparto de dobles y triples por presupuesto, coste de las apuestas e historial de jornadas.</p>
-      <p class="noshop"><strong>No vendemos boletos ni aceptamos apuestas.</strong> Herramienta informativa para mayores de 18 años.</p>
-      <input id="jname" aria-label="Nombre de la jornada">
+      <p class="lead" id="lead">Calculadora gratuita para preparar tu boleto de La Quiniela: probabilidad de cada signo según las cuotas, reparto de dobles y triples por presupuesto, coste de las apuestas e historial de jornadas.</p>
+      <p class="noshop" data-th="noshop"><strong>No vendemos boletos ni aceptamos apuestas.</strong> Herramienta informativa para mayores de 18 años.</p>
+      <input id="jname" data-ta="roundName" aria-label="Nombre de la jornada">
       <div class="stamp" id="stamp"></div>
     </div>
     <div class="stats">
-      <div class="stat"><div class="k">Apuestas</div><div class="v" id="st-bets">—</div><div class="s" id="st-mix">—</div></div>
-      <div class="stat"><div class="k">Coste</div><div class="v" id="st-cost">—</div><div class="s" id="st-price">—</div></div>
-      <div class="stat"><div class="k">Prob. de 14</div><div class="v" id="st-p14">—</div><div class="s" id="st-p10">—</div></div>
-      <div class="stat"><div class="k">Aciertos</div><div class="v" id="st-exp">—</div><div class="s" id="st-real">esperados</div></div>
+      <div class="stat"><div class="k" data-t="statBets">Apuestas</div><div class="v" id="st-bets">—</div><div class="s" id="st-mix">—</div></div>
+      <div class="stat"><div class="k" data-t="statCost">Coste</div><div class="v" id="st-cost">—</div><div class="s" id="st-price">—</div></div>
+      <div class="stat"><div class="k" id="st-pall-k">Prob. de 14</div><div class="v" id="st-p14">—</div><div class="s" id="st-p10">—</div></div>
+      <div class="stat"><div class="k" data-t="statHits">Aciertos</div><div class="v" id="st-exp">—</div><div class="s" id="st-real">esperados</div></div>
     </div>
   </header>
 
-  <section class="tools" aria-label="Herramientas">
-    <label for="jsel">Jornada <select id="jsel"></select></label>
-    <button class="btn" id="b-jdel">Borrar jornada</button>
-    <label for="n-tri">Triples <select id="n-tri"><option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option></select></label>
-    <label for="n-dob">Dobles <select id="n-dob"><option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
-    <button class="btn primary" id="b-suggest">Sugerir signos</button>
+  <section class="tools" data-ta="tools" aria-label="Herramientas">
+    <label for="jsel"><span data-t="round">Jornada</span> <select id="jsel"></select></label>
+    <button class="btn" id="b-jdel" data-t="delRound">Borrar jornada</button>
+    <label for="n-tri"><span data-t="triples">Triples</span> <select id="n-tri"><option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option></select></label>
+    <label for="n-dob"><span data-t="doubles">Dobles</span> <select id="n-dob"><option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
+    <button class="btn primary" id="b-suggest" data-t="suggest">Sugerir signos</button>
     <span class="budget">
-      <label for="b-eur">Presupuesto € <input id="b-eur" type="number" min="0" step="0.75" inputmode="decimal" value="18"></label>
-      <label for="b-goal">Objetivo <select id="b-goal"><option value="p14">Acertar los 14</option><option value="p10">Acertar 10 o más</option></select></label>
-      <button class="btn primary" id="b-alloc">Repartir presupuesto</button>
-      <button class="btn" id="b-undo" hidden>Deshacer</button>
+      <label for="b-eur"><span id="b-eur-l">Presupuesto €</span> <input id="b-eur" type="number" min="0" step="0.75" inputmode="decimal" value="18"></label>
+      <label for="b-goal"><span data-t="goal">Objetivo</span> <select id="b-goal"><option value="p14">Acertar los 14</option><option value="p10">Acertar 10 o más</option></select></label>
+      <button class="btn primary" id="b-alloc" data-t="allocBtn">Repartir presupuesto</button>
+      <button class="btn" id="b-undo" data-t="undo" hidden>Deshacer</button>
     </span>
-    <button class="btn" id="b-fav">Solo favoritos</button>
-    <button class="btn" id="b-copy">Copiar boleto</button>
+    <button class="btn" id="b-fav" data-t="favBtn">Solo favoritos</button>
+    <button class="btn" id="b-copy" data-t="copyBtn">Copiar boleto</button>
     <span class="toast" id="toast" aria-live="polite"></span>
     <span class="spacer"></span>
-    <details class="settings">
-      <summary>Parámetros del modelo</summary>
+    <details class="settings" id="fmtbox">
+      <summary data-t="fmtH">Formato del boleto</summary>
       <div class="set-grid">
-        <label class="field" for="p-avg">Goles base/equipo<input id="p-avg" type="number" step="0.05" min="0.5"></label>
-        <label class="field" for="p-prior">Peso a priori (partidos)<input id="p-prior" type="number" step="1" min="0"></label>
-        <label class="field" for="p-home">Factor campo<input id="p-home" type="number" step="0.01" min="1"></label>
-        <label class="field" for="p-price">€ por apuesta<input id="p-price" type="number" step="0.05" min="0"></label>
+        <label class="field" for="f-preset"><span data-t="fmtPreset">Tipo</span><select id="f-preset"><option value="quiniela">La Quiniela (España)</option><option value="custom" data-t="fmtCustom">Boleto 1X2 personalizado</option></select></label>
+        <label class="field" for="f-n"><span data-t="fmtN">Partidos</span><input id="f-n" type="number" min="2" max="20" step="1"></label>
+        <label class="field" for="p-price"><span data-t="fmtPrice">Precio por apuesta</span><input id="p-price" type="number" step="0.05" min="0"></label>
+        <label class="field" for="f-cur"><span data-t="fmtCur">Moneda</span><select id="f-cur"></select></label>
+        <label class="field" for="f-min"><span data-t="fmtMin">Aciertos mínimos con premio</span><input id="f-min" type="number" min="1" max="20" step="1"></label>
+      </div>
+      <p class="sub" data-t="fmtNote">Comprueba las reglas y los precios en el boleto oficial de tu país.</p>
+    </details>
+    <details class="settings">
+      <summary data-t="modelH">Parámetros del modelo</summary>
+      <div class="set-grid">
+        <label class="field" for="p-avg"><span data-t="pAvg">Goles base/equipo</span><input id="p-avg" type="number" step="0.05" min="0.5"></label>
+        <label class="field" for="p-prior"><span data-t="pPrior">Peso a priori (partidos)</span><input id="p-prior" type="number" step="1" min="0"></label>
+        <label class="field" for="p-home"><span data-t="pHome">Factor campo</span><input id="p-home" type="number" step="0.01" min="1"></label>
         <label class="field" for="p-rho">Dixon-Coles ρ<input id="p-rho" type="number" step="0.01" min="-0.3" max="0.3"></label>
-        <label class="field" for="p-mkt">Peso de las cuotas %<input id="p-mkt" type="number" step="10" min="0" max="100"></label>
-        <label class="field" for="p-beta">Peso valor XI<input id="p-beta" type="number" step="0.05" min="0" max="1"></label>
-        <label class="field" for="p-wf">Peso forma<input id="p-wf" type="number" step="0.25" min="0" max="2"></label>
-        <button class="btn" id="b-clear">Vaciar jornada</button>
+        <label class="field" for="p-mkt"><span data-t="pMkt">Peso de las cuotas %</span><input id="p-mkt" type="number" step="10" min="0" max="100"></label>
+        <label class="field" for="p-beta"><span data-t="pBeta">Peso valor XI</span><input id="p-beta" type="number" step="0.05" min="0" max="1"></label>
+        <label class="field" for="p-wf"><span data-t="pWf">Peso forma</span><input id="p-wf" type="number" step="0.25" min="0" max="2"></label>
+        <button class="btn" id="b-clear" data-t="clearRound">Vaciar jornada</button>
       </div>
     </details>
     <p class="alloc-msg" id="allocmsg" aria-live="polite"></p>
-    <textarea id="copyout" hidden readonly aria-label="Texto del boleto"></textarea>
+    <textarea id="copyout" data-ta="ticketText" hidden readonly aria-label="Texto del boleto"></textarea>
   </section>
 
   <section class="panel start" id="startbox" hidden>
-    <h2>Pruébala sin registrarte</h2>
-    <p class="sub">Mira cómo funciona con una jornada de ejemplo, con equipos y cuotas inventados. Cuando quieras usar partidos reales, necesitarás una clave gratuita de The Odds API.</p>
-    <button class="btn primary" id="b-demo">Ver ejemplo</button>
+    <h2 data-t="startH">Pruébala sin registrarte</h2>
+    <p class="sub" data-t="startP">Mira cómo funciona con una jornada de ejemplo, con equipos y cuotas inventados. Cuando quieras usar partidos reales, necesitarás una clave gratuita de The Odds API.</p>
+    <button class="btn primary" id="b-demo" data-t="demoBtn">Ver ejemplo</button>
   </section>
   <div class="demo-note" id="demonote" hidden>
-    <span><strong>Ejemplo con datos inventados.</strong> Estos equipos y cuotas no existen: no los uses para jugar.</span>
-    <button class="btn" id="b-real">Usar partidos reales</button>
+    <span data-th="demoNote"><strong>Ejemplo con datos inventados.</strong> Estos equipos y cuotas no existen: no los uses para jugar.</span>
+    <button class="btn" id="b-real" data-t="realBtn">Usar partidos reales</button>
   </div>
 
   <section class="panel calc" aria-labelledby="calc-h">
-    <h2 id="calc-h">Calculadora de dobles y triples</h2>
-    <p class="sub">Cada doble multiplica las apuestas por 2 y cada triple, por 3. Elige una combinación o pulsa una casilla de la tabla.</p>
+    <h2 id="calc-h" data-t="calcH">Calculadora de dobles y triples</h2>
+    <p class="sub" data-t="calcP">Cada doble multiplica las apuestas por 2 y cada triple, por 3. Elige una combinación o pulsa una casilla de la tabla.</p>
     <div class="calc-top">
-      <label class="field" for="c-tri">Triples<select id="c-tri"></select></label>
-      <label class="field" for="c-dob">Dobles<select id="c-dob"></select></label>
+      <label class="field" for="c-tri"><span data-t="triples">Triples</span><select id="c-tri"></select></label>
+      <label class="field" for="c-dob"><span data-t="doubles">Dobles</span><select id="c-dob"></select></label>
       <div class="calc-res" aria-live="polite"><div class="v" id="c-bets"></div><div class="s" id="c-det"></div></div>
-      <button class="btn primary" id="c-apply">Aplicar al boleto</button>
+      <button class="btn primary" id="c-apply" data-t="applyBtn">Aplicar al boleto</button>
     </div>
     <div class="calc-wrap"><table class="calc-t" id="c-table"></table></div>
   </section>
 
   <section class="panel sync" id="sync" aria-labelledby="sync-h" hidden>
-    <h2 id="sync-h">Datos en línea</h2>
-    <p class="sub">Buscar partidos no gasta créditos. Las cuotas gastan 1 crédito por competición y los resultados, 2. Solo se hacen peticiones cuando pulsas un botón.</p>
-    <details class="edit" id="keysbox"><summary>Tu clave de API</summary>
-      <p class="sub">Regístrate gratis en <a href="https://the-odds-api.com/" target="_blank" rel="noopener noreferrer">The Odds API</a> (plan Starter, 500 créditos al mes), copia la clave que te envían y pégala aquí.</p>
+    <h2 id="sync-h" data-t="syncH">Datos en línea</h2>
+    <p class="sub" data-t="syncP">Buscar partidos no gasta créditos. Las cuotas gastan 1 crédito por competición y los resultados, 2. Solo se hacen peticiones cuando pulsas un botón.</p>
+    <details class="edit" id="keysbox"><summary data-t="keyH">Tu clave de API</summary>
+      <p class="sub" data-th="keyP">Regístrate gratis en <a href="https://the-odds-api.com/" target="_blank" rel="noopener noreferrer">The Odds API</a> (plan Starter, 500 créditos al mes), copia la clave que te envían y pégala aquí.</p>
       <div class="edit-grid">
         <label class="field wide" for="k-odds">The Odds API<input id="k-odds" type="password" autocomplete="off" spellcheck="false"></label>
-        <button class="btn" id="b-keytest">Probar clave</button>
+        <button class="btn" id="b-keytest" data-t="keyTest">Probar clave</button>
       </div>
-      <p class="sub">Se guarda solo en este navegador y se usa solo para consultar The Odds API. No la compartas: cada persona necesita la suya.</p>
+      <p class="sub" data-t="keyNote">Se guarda solo en este navegador y se usa solo para consultar The Odds API. No la compartas: cada persona necesita la suya.</p>
     </details>
-    <details class="edit" id="pickbox"><summary>Nueva jornada: elegir partidos</summary>
+    <details class="edit" id="pickbox"><summary data-t="pickH">Nueva jornada: elegir partidos</summary>
       <div class="pick-tools">
         <div class="comps" id="comps"></div>
-        <label class="field" for="p-days">Próximos días<select id="p-days"><option>3</option><option selected>7</option><option>14</option></select></label>
-        <button class="btn primary" id="b-find">Buscar partidos</button>
+        <label class="field" for="p-days"><span data-t="nextDays">Próximos días</span><select id="p-days"><option>3</option><option selected>7</option><option>14</option></select></label>
+        <button class="btn primary" id="b-find" data-t="findBtn">Buscar partidos</button>
       </div>
-      <label class="field wide" for="p-filter">Filtrar por equipo<input id="p-filter" autocomplete="off"></label>
+      <label class="field wide" for="p-filter"><span data-t="filterTeam">Filtrar por equipo</span><input id="p-filter" autocomplete="off"></label>
       <div class="pick-cols">
-        <div><h3>Partidos encontrados</h3><div class="evlist" id="evlist"><p class="sub">Elige competiciones y pulsa Buscar partidos. Si una no está en temporada, no saldrán partidos.</p></div></div>
+        <div><h3 data-t="foundH">Partidos encontrados</h3><div class="evlist" id="evlist"><p class="sub" data-t="evHint">Elige competiciones y pulsa Buscar partidos. Si una no está en temporada, no saldrán partidos.</p></div></div>
         <div><h3 id="pick-h">Tu quiniela (0 de 15)</h3><ol class="picks" id="picks"></ol>
-          <label class="field wide" for="p-name">Nombre de la jornada<input id="p-name" autocomplete="off"></label>
-          <button class="btn primary" id="b-create" disabled>Crear jornada y traer cuotas</button>
+          <label class="field wide" for="p-name"><span data-t="roundName">Nombre de la jornada</span><input id="p-name" autocomplete="off"></label>
+          <button class="btn primary" id="b-create" data-t="createBtn" disabled>Crear jornada y traer cuotas</button>
         </div>
       </div>
     </details>
     <div class="sync-btns">
-      <button class="btn" id="b-odds">Actualizar cuotas</button>
-      <button class="btn" id="b-results">Cargar resultados</button>
+      <button class="btn" id="b-odds" data-t="oddsBtn">Actualizar cuotas</button>
+      <button class="btn" id="b-results" data-t="resultsBtn">Cargar resultados</button>
     </div>
     <p class="sync-log" id="synclog" aria-live="polite"></p>
   </section>
 
-  <section class="board" aria-label="Partidos">
-    <div class="head"><span>#</span><span>Partido</span><span>Probabilidad 1 · X · 2</span><span class="hs"><span>1</span><span>X</span><span>2</span></span></div>
+  <section class="board" data-ta="matches" aria-label="Partidos">
+    <div class="head"><span>#</span><span data-t="match">Partido</span><span data-t="prob1x2">Probabilidad 1 · X · 2</span><span class="hs"><span>1</span><span>X</span><span>2</span></span></div>
     <div id="board"></div>
   </section>
 
   <section class="panel" aria-labelledby="rv-h">
-    <h2 id="rv-h">A revisar</h2>
-    <p class="sub">Partidos donde tu boleto corre más riesgo, del más flojo al menos flojo.</p>
+    <h2 id="rv-h" data-t="reviewH">A revisar</h2>
+    <p class="sub" data-t="reviewP">Partidos donde tu boleto corre más riesgo, del más flojo al menos flojo.</p>
     <ul class="review" id="review"></ul>
   </section>
 
-  <section class="lower">
+  <section class="lower" id="lower">
     <div class="panel" id="pleno">
       <h2>Pleno al 15</h2>
-      <p class="sub">Probabilidad de cada marcador. Pulsa una casilla para elegirla.</p>
+      <p class="sub" data-t="plenoP">Probabilidad de cada marcador. Pulsa una casilla para elegirla.</p>
       <div class="pteams" data-i="p">
-        <input class="tn" data-k="h" id="p-h" aria-label="Local del pleno">
+        <input class="tn" data-k="h" id="p-h" data-ta="plHome" aria-label="Local del pleno">
         <span class="vs">–</span>
-        <input class="tn away" data-k="a" id="p-a" aria-label="Visitante del pleno">
+        <input class="tn away" data-k="a" id="p-a" data-ta="plAway" aria-label="Visitante del pleno">
       </div>
       <div class="fi" id="pfi"></div>
       <div class="pgrid-wrap"><table class="pgrid" id="pgrid"></table></div>
@@ -340,8 +352,8 @@ h2{font-family:var(--f-display);font-size:24px;font-weight:700;text-transform:up
       <div data-i="p" id="pedit"></div>
     </div>
     <div class="panel">
-      <h2>Aciertos esperados</h2>
-      <p class="sub">Probabilidad de acertar k partidos con los signos marcados. En rojo, las categorías con premio.</p>
+      <h2 data-t="distH">Aciertos esperados</h2>
+      <p class="sub" data-t="distP">Probabilidad de acertar k partidos con los signos marcados. En rojo, las categorías con premio.</p>
       <div class="chart" id="chart"></div>
       <div class="axis" id="axis"></div>
       <table class="prizes" id="prizes"></table>
@@ -349,9 +361,9 @@ h2{font-family:var(--f-display);font-size:24px;font-weight:700;text-transform:up
   </section>
 
   <section class="method">
-    <h2>Cómo calcula</h2>
-    <p>Si un partido tiene cuotas, la web usa la probabilidad que implican, sin el margen de las casas. Si además escribes los goles de los equipos en Datos del partido, verás el modelo como referencia. La tabla de marcadores del pleno sale del modelo y, sin goles, es solo orientativa.</p>
-    <div class="formula">ataque  = (GF + μ·peso) / (PJ + peso) / μ × (1 + ajuste)
+    <h2 data-t="methodH">Cómo calcula</h2>
+    <p data-t="method1">Si un partido tiene cuotas, la web usa la probabilidad que implican, sin el margen de las casas. Si además escribes los goles de los equipos en Datos del partido, verás el modelo como referencia. La tabla de marcadores del pleno sale del modelo y, sin goles, es solo orientativa.</p>
+    <div class="formula" data-t="formula">ataque  = (GF + μ·peso) / (PJ + peso) / μ × (1 + ajuste)
 defensa = (GC + μ·peso) / (PJ + peso) / μ × (1 − ajuste)
 valor   = (valor XI local / valor XI visitante)^β
 λ local     = base × ataque_local × defensa_visit × campo × valor
@@ -359,27 +371,89 @@ valor   = (valor XI local / valor XI visitante)^β
 P(k goles)  = e^(−λ) · λ^k / k!
 Dixon-Coles: 0-0 ×(1 − λl·λv·ρ)   1-1 ×(1 − ρ)
              0-1 ×(1 + λl·ρ)      1-0 ×(1 + λv·ρ)
-Casas:  p = (1/cuota) / Σ(1/cuota)   (sin margen)
+Casas:  p = (1/cuota)^k, con k tal que 1, X y 2 sumen 1
 Final = (1 − peso)·modelo + peso·casas</div>
-    <p>Dixon-Coles corrige los marcadores bajos, donde el Poisson simple se equivoca más: con ρ negativo suben el 0-0 y el 1-1, y con ello la X. Si un partido tiene cuotas, la app quita el margen de la casa y usa esa probabilidad; el modelo queda como referencia. En una prueba con 90 partidos europeos de esta temporada, las casas acertaron el favorito el 62% de las veces y el modelo el 53%, y cuanto más peso tenían las cuotas, menor era el error. Puedes cambiar ese peso en los parámetros.</p>
-    <p>Es una herramienta para organizar el boleto, no una forma de ganar: no garantiza aciertos ni premios. Esta web no vende boletos, no acepta apuestas ni dinero, y no tiene relación con Loterías y Apuestas del Estado ni con The Odds API. Comprueba siempre los partidos con el boleto oficial. Solo para mayores de 18 años; juega con responsabilidad. Tus signos y tu clave se guardan en tu navegador; la web no tiene cuentas. Las visitas se cuentan de forma agregada con Cloudflare Web Analytics.</p>
+    <p data-t="method2">Dixon-Coles corrige los marcadores bajos, donde el Poisson simple se equivoca más: con ρ negativo suben el 0-0 y el 1-1, y con ello la X. Si un partido tiene cuotas, la web quita el margen con el método de potencia y usa esa probabilidad; el modelo queda como referencia. En 144 partidos europeos de esta temporada, ese método redujo un poco el error frente al reparto proporcional (log-loss 0,828 frente a 0,833), aunque la diferencia no es concluyente. En otra prueba con 90 partidos, las casas acertaron el favorito el 62% de las veces y el modelo el 53%. Puedes cambiar el peso de las cuotas en los parámetros.</p>
+    <p data-t="method3">Es una herramienta para organizar el boleto, no una forma de ganar: no garantiza aciertos ni premios. Esta web no vende boletos, no acepta apuestas ni dinero, y no tiene relación con Loterías y Apuestas del Estado, con otros operadores de juego ni con The Odds API. Comprueba siempre los partidos con el boleto oficial. Solo para mayores de 18 años o de la edad legal de tu país; juega con responsabilidad. Tus signos y tu clave se guardan en tu navegador; la web no tiene cuentas. Las visitas se cuentan de forma agregada con Cloudflare Web Analytics.</p>
   </section>
 </div>
 
 <script>
 (function(){
+/* Idiomas */
+const LANGS=['es','en'];
+const pl=(n,w,s='s')=>n===1?w:w+s;
+const I18N={
+es:{title:'Quiniela Lab: calculadora de dobles y triples para La Quiniela',desc:'Prepara tu boleto de La Quiniela gratis: probabilidades según las cuotas, reparto de dobles y triples por presupuesto, coste e historial de jornadas.',
+ eyebrow:'Preparar el boleto · cuotas y modelo',leadQ:'Calculadora gratuita para preparar tu boleto de La Quiniela: probabilidad de cada signo según las cuotas, reparto de dobles y triples por presupuesto, coste de las apuestas e historial de jornadas.',leadC:'Calculadora gratuita para boletos 1X2 de fútbol: probabilidad de cada signo según las cuotas, reparto de dobles y triples por presupuesto, coste de las apuestas e historial de jornadas.',
+ noshop:'<strong>No vendemos boletos ni aceptamos apuestas.</strong> Herramienta informativa para mayores de 18 años o de la edad legal de tu país.',roundName:'Nombre de la jornada',statBets:'Apuestas',statCost:'Coste',statHits:'Aciertos',tools:'Herramientas',round:'Jornada',delRound:'Borrar jornada',triples:'Triples',doubles:'Dobles',suggest:'Sugerir signos',goal:'Objetivo',allocBtn:'Repartir presupuesto',undo:'Deshacer',favBtn:'Solo favoritos',copyBtn:'Copiar boleto',
+ fmtH:'Formato del boleto',fmtPreset:'Tipo',fmtCustom:'Boleto 1X2 personalizado',fmtN:'Partidos',fmtPrice:'Precio por apuesta',fmtCur:'Moneda',fmtMin:'Aciertos mínimos con premio',fmtNote:'Comprueba las reglas y los precios en el boleto oficial de tu país.',modelH:'Parámetros del modelo',pAvg:'Goles base/equipo',pPrior:'Peso a priori (partidos)',pHome:'Factor campo',pMkt:'Peso de las cuotas %',pBeta:'Peso valor XI',pWf:'Peso forma',clearRound:'Vaciar jornada',ticketText:'Texto del boleto',
+ startH:'Pruébala sin registrarte',startP:'Mira cómo funciona con una jornada de ejemplo, con equipos y cuotas inventados. Cuando quieras usar partidos reales, necesitarás una clave gratuita de The Odds API.',demoBtn:'Ver ejemplo',demoNote:'<strong>Ejemplo con datos inventados.</strong> Estos equipos y cuotas no existen: no los uses para jugar.',realBtn:'Usar partidos reales',calcH:'Calculadora de dobles y triples',calcP:'Cada doble multiplica las apuestas por 2 y cada triple, por 3. Elige una combinación o pulsa una casilla de la tabla.',applyBtn:'Aplicar al boleto',
+ syncH:'Datos en línea',syncP:'Buscar partidos no gasta créditos. Las cuotas gastan 1 crédito por competición y los resultados, 2. Solo se hacen peticiones cuando pulsas un botón.',keyH:'Tu clave de API',keyP:'Regístrate gratis en <a href="https://the-odds-api.com/" target="_blank" rel="noopener noreferrer">The Odds API</a> (plan Starter, 500 créditos al mes), copia la clave que te envían y pégala aquí.',keyTest:'Probar clave',keyNote:'Se guarda solo en este navegador y se usa solo para consultar The Odds API. No la compartas: cada persona necesita la suya.',pickH:'Nueva jornada: elegir partidos',nextDays:'Próximos días',findBtn:'Buscar partidos',filterTeam:'Filtrar por equipo',foundH:'Partidos encontrados',evHint:'Elige competiciones y pulsa Buscar partidos. Si una no está en temporada, no saldrán partidos.',createBtn:'Crear jornada y traer cuotas',oddsBtn:'Actualizar cuotas',resultsBtn:'Cargar resultados',
+ matches:'Partidos',match:'Partido',prob1x2:'Probabilidad 1 · X · 2',reviewH:'A revisar',reviewP:'Partidos donde tu boleto corre más riesgo, del más flojo al menos flojo.',plenoP:'Probabilidad de cada marcador. Pulsa una casilla para elegirla.',plHome:'Local del pleno',plAway:'Visitante del pleno',distH:'Aciertos esperados',distP:'Probabilidad de acertar k partidos con los signos marcados. En rojo, las categorías con premio.',methodH:'Cómo calcula',
+ method1:'Si un partido tiene cuotas, la web usa la probabilidad que implican, sin el margen de las casas. Si además escribes los goles de los equipos en Datos del partido, verás el modelo como referencia. La tabla de marcadores del pleno sale del modelo y, sin goles, es solo orientativa.',
+ formula:'ataque  = (GF + μ·peso) / (PJ + peso) / μ × (1 + ajuste)\ndefensa = (GC + μ·peso) / (PJ + peso) / μ × (1 − ajuste)\nvalor   = (valor XI local / valor XI visitante)^β\nλ local     = base × ataque_local × defensa_visit × campo × valor\nλ visitante = base × ataque_visit × defensa_local ÷ campo ÷ valor\nP(k goles)  = e^(−λ) · λ^k / k!\nDixon-Coles: 0-0 ×(1 − λl·λv·ρ)   1-1 ×(1 − ρ)\n             0-1 ×(1 + λl·ρ)      1-0 ×(1 + λv·ρ)\nCasas:  p = (1/cuota)^k, con k tal que 1, X y 2 sumen 1\nFinal = (1 − peso)·modelo + peso·casas',
+ method2:'Dixon-Coles corrige los marcadores bajos, donde el Poisson simple se equivoca más: con ρ negativo suben el 0-0 y el 1-1, y con ello la X. Si un partido tiene cuotas, la web quita el margen con el método de potencia y usa esa probabilidad; el modelo queda como referencia. En 144 partidos europeos de esta temporada, ese método redujo un poco el error frente al reparto proporcional (log-loss 0,828 frente a 0,833), aunque la diferencia no es concluyente. En otra prueba con 90 partidos, las casas acertaron el favorito el 62% de las veces y el modelo el 53%. Puedes cambiar el peso de las cuotas en los parámetros.',
+ method3:'Es una herramienta para organizar el boleto, no una forma de ganar: no garantiza aciertos ni premios. Esta web no vende boletos, no acepta apuestas ni dinero, y no tiene relación con Loterías y Apuestas del Estado, con otros operadores de juego ni con The Odds API. Comprueba siempre los partidos con el boleto oficial. Solo para mayores de 18 años o de la edad legal de tu país; juega con responsabilidad. Tus signos y tu clave se guardan en tu navegador; la web no tiene cuentas. Las visitas se cuentan de forma agregada con Cloudflare Web Analytics.',
+ home:'Local',away:'Visitante',newRound:'Nueva jornada',demoName:'Ejemplo (datos inventados)',demoStamp:'Equipos y cuotas inventados',budget:'Presupuesto',statAll:n=>`Prob. de ${n}`,goalAll:n=>`Acertar los ${n}`,goalMin:n=>`Acertar ${n} o más`,oneIn:s=>`1 entre ${s}`,atHome:'En casa',awayGame:'Fuera',goalsIn:(g,c,p)=>`${g}-${c} en ${p}`,missing:n=>`${n} ${pl(n,'baja')}`,form:{G:'G',E:'E',P:'P'},statLab:['PJ','GF','GC','Ajuste %'],oddsOpt:'Cuotas (opcional)',sofa:'Forma, valor y bajas',muL:'Media comp.',hvL:'Valor XI local (M€)',avL:'Valor XI visit. (M€)',hfL:'Forma local',afL:'Forma visitante',hbL:'Bajas local',abL:'Bajas visitante',homeOf:i=>`Local partido ${i}`,awayOf:i=>`Visitante partido ${i}`,signsOf:i=>`Signos partido ${i}`,xg:'goles esperados',matchData:'Datos del partido',realRes:'Resultado real',plenoData:'Datos del pleno',plRealH:'Goles local (real)',plRealA:'Goles visitante (real)',
+ cov:c=>`tus signos cubren solo el ${c}`,disagree:(a,b)=>`el modelo prefiere ${a} y las casas ${b}`,have:s=>`llevas ${s}`,noWarn:'Ningún aviso: tus signos cubren al menos el 50% y modelo y casas coinciden en el favorito.',markFirst:'Marca tus signos para ver los avisos.',modelL:'Modelo',booksL:'Casas',modelOnly:'Sin cuotas: solo modelo',noData:'Sin cuotas ni goles: añádelos en Datos del partido',xgL:(a,b)=>`Goles esperados ${a} – ${b}`,noGoals:'Sin goles: marcadores orientativos',yourPleno:(s,p)=>`Tu pleno ${s}: ${p}%`,plHit:'Pleno acertado',plMiss:'Pleno fallado',kHits:(k,p)=>`${k} aciertos: ${p}%`,hitsRow:(k,pleno)=>`${k} aciertos${pleno?' (opta al pleno)':''}`,minOrMore:n=>`${n} o más`,
+ left:n=>`faltan ${n} ${pl(n,'partido')}`,mix:(t,d)=>`${t} ${pl(t,'triple')} · ${d} ${pl(d,'doble')}`,mixAnd:(t,d)=>`${t} ${pl(t,'triple')} y ${d} ${pl(d,'doble')}`,perBet:s=>`${s} por apuesta`,markAll:'marca todos los partidos',minOf:(p,n)=>`${p}% de ${n} o más`,hitOf:(a,b)=>`${a} de ${b} acertados`,expOf:n=>`esperados de ${n}`,bets:n=>pl(n,'apuesta'),
+ calcDet:(t,d,b,n,pr)=>`3^${t} × 2^${d} = ${b} · ${t+d} de ${n} partidos con varios signos · ${pr} por apuesta`,calcCorner:'Triples \\ Dobles',calcCell:(t,d,n,m)=>`${t} triples y ${d} dobles: ${n} apuestas, ${m}`,calcTooMany:n=>`El boleto solo tiene ${n} partidos`,
+ noPrice:'Falta el precio por apuesta en el formato del boleto.',noBudget:s=>`Con ese presupuesto no llega para una apuesta (${s}).`,allocRes:(b,mix,c,r,n,pa,m,pm)=>`${b} apuestas (${mix}): ${c}, sobran ${r}. Prob. de ${n}: ${pa}. Prob. de ${m} o más: ${pm}%.`,allocNo:n=>` Aviso: ${n} ${pl(n,'partido')} sin cuotas, ahí el cálculo es menos fiable.`,allocEnd:' Más probabilidad no significa más premio esperado.',
+ tDemo:'Ejemplo cargado',tApplied:'Dobles y triples aplicados',tSuggested:'Signos sugeridos',tFav:'Marcados los favoritos',tCopyM:'Selecciona y copia el texto',tCopied:'Boleto copiado',confirm:'Pulsa otra vez para confirmar',tCleared:'Jornada vaciada',tLoaded:'Jornada cargada',tDeleted:'Jornada borrada',tFormat:'Formato actualizado',
+ groups:{},names:{},
+ eBadResp:'Respuesta no válida',eConn:'No se ha podido conectar. Revisa tu conexión.',eNoKey:'Falta la clave de The Odds API',eBadKey:'The Odds API no acepta la clave',eLimit:'The Odds API: sin créditos o demasiadas peticiones',eBadBody:'The Odds API: respuesta no válida',eOther:s=>`The Odds API: ${s}`,eErr:n=>`error ${n}`,creditsLeft:n=>` Créditos restantes: ${n}.`,noFilter:'No hay partidos con ese filtro.',pickT:(a,b)=>`Tu boleto (${a} de ${b})`,up:'Subir',down:'Bajar',remove:'Quitar',eNotHere:'Esta jornada no se creó desde aquí: elige sus partidos en Nueva jornada',stampOdds:d=>`Cuotas medias de The Odds API: ${d}`,oddsDone:(a,b)=>`Cuotas actualizadas en ${a} de ${b} partidos.`,noOdds:s=>`\nSin cuotas: ${s}.`,querying:'Consultando…',keyOk:'Clave correcta.',ePickComp:'Elige al menos una competición',found:n=>`${n} ${pl(n,'partido')} ${n===1?'encontrado':'encontrados'}.`,noDataNow:s=>` Sin datos ahora: ${s}.`,maxPicks:n=>`Ya tienes ${n} partidos. Quita uno para añadir otro.`,eFaltan:'Faltan partidos',created:'Jornada creada.',roundOf:d=>`Jornada del ${d}`,resDone:(a,b)=>`Resultados cargados en ${a} de ${b} partidos. Solo hay datos de los últimos 3 días.`},
+en:{title:'Quiniela Lab: free 1X2 football pools calculator',desc:'Plan your 1X2 football pools ticket for free: odds-based probabilities, budget allocation for doubles and triples, ticket cost and saved rounds.',
+ eyebrow:'Plan your ticket · odds and model',leadQ:'Free calculator for your La Quiniela ticket: probability of each sign from the odds, budget allocation for doubles and triples, ticket cost and saved rounds.',leadC:'Free calculator for 1X2 football pools tickets: probability of each sign from the odds, budget allocation for doubles and triples, ticket cost and saved rounds.',
+ noshop:'<strong>We don’t sell tickets or take bets.</strong> Information tool for adults aged 18 or over, or the legal age in your country.',roundName:'Round name',statBets:'Lines',statCost:'Cost',statHits:'Hits',tools:'Tools',round:'Round',delRound:'Delete round',triples:'Triples',doubles:'Doubles',suggest:'Suggest signs',goal:'Goal',allocBtn:'Allocate budget',undo:'Undo',favBtn:'Favourites only',copyBtn:'Copy ticket',
+ fmtH:'Ticket format',fmtPreset:'Type',fmtCustom:'Custom 1X2 ticket',fmtN:'Matches',fmtPrice:'Price per line',fmtCur:'Currency',fmtMin:'Minimum hits for a prize',fmtNote:'Check the rules and prices on the official ticket in your country.',modelH:'Model settings',pAvg:'Base goals per team',pPrior:'Prior weight (matches)',pHome:'Home factor',pMkt:'Odds weight %',pBeta:'Squad value weight',pWf:'Form weight',clearRound:'Clear round',ticketText:'Ticket text',
+ startH:'Try it without signing up',startP:'See how it works with a sample round, using made-up teams and odds. To use real matches, you’ll need a free The Odds API key.',demoBtn:'View example',demoNote:'<strong>Example with made-up data.</strong> These teams and odds don’t exist: don’t use them to play.',realBtn:'Use real matches',calcH:'Doubles and triples calculator',calcP:'Each double multiplies the lines by 2 and each triple by 3. Pick a combination or tap a table cell.',applyBtn:'Apply to ticket',
+ syncH:'Live data',syncP:'Finding matches doesn’t use credits. Odds use 1 credit per competition and results use 2. Requests are only sent when you press a button.',keyH:'Your API key',keyP:'Sign up for free at <a href="https://the-odds-api.com/" target="_blank" rel="noopener noreferrer">The Odds API</a> (Starter plan, 500 credits a month), copy the key they send you and paste it here.',keyTest:'Test key',keyNote:'It’s stored only in this browser and used only to query The Odds API. Don’t share it: everyone needs their own.',pickH:'New round: choose matches',nextDays:'Next days',findBtn:'Find matches',filterTeam:'Filter by team',foundH:'Matches found',evHint:'Choose competitions and press Find matches. A competition out of season won’t show matches.',createBtn:'Create round and get odds',oddsBtn:'Update odds',resultsBtn:'Load results',
+ matches:'Matches',match:'Match',prob1x2:'Probability 1 · X · 2',reviewH:'To review',reviewP:'Matches where your ticket is most at risk, weakest first.',plenoP:'Probability of each score. Tap a cell to choose it.',plHome:'Bonus match home team',plAway:'Bonus match away team',distH:'Expected hits',distP:'Probability of getting k matches right with the marked signs. Prize tiers are in red.',methodH:'How it calculates',
+ method1:'If a match has odds, the site uses the probability they imply, without the bookmakers’ margin. If you also enter team goals in Match data, you’ll see the model for reference. The bonus score table comes from the model and, without goals, is only a rough guide.',
+ formula:'attack  = (GF + μ·weight) / (P + weight) / μ × (1 + adjust)\ndefence = (GA + μ·weight) / (P + weight) / μ × (1 − adjust)\nvalue   = (home XI value / away XI value)^β\nλ home = base × attack_home × defence_away × venue × value\nλ away = base × attack_away × defence_home ÷ venue ÷ value\nP(k goals) = e^(−λ) · λ^k / k!\nDixon-Coles: 0-0 ×(1 − λh·λa·ρ)   1-1 ×(1 − ρ)\n             0-1 ×(1 + λh·ρ)      1-0 ×(1 + λa·ρ)\nBookmakers: p = (1/odds)^k, with k such that 1, X and 2 add up to 1\nFinal = (1 − weight)·model + weight·bookmakers',
+ method2:'Dixon-Coles corrects low scores, where simple Poisson is least accurate: with a negative ρ, 0-0 and 1-1 become more likely, and so does X. If a match has odds, the site removes the margin with the power method and uses that probability; the model stays as a reference. Across 144 European matches this season, that method slightly reduced the error compared with proportional scaling (log-loss 0.828 vs 0.833), although the difference isn’t conclusive. In another test of 90 matches, bookmakers’ favourites won 62% of the time and the model’s 53%. You can change the odds weight in the settings.',
+ method3:'This is a tool for organising your ticket, not a way to win: it doesn’t guarantee hits or prizes. This site doesn’t sell tickets or take bets or money, and isn’t affiliated with Loterías y Apuestas del Estado, any other gambling operator or The Odds API. Always check the matches against the official ticket and whether pools are legal where you live. Adults only (18+ or the legal age in your country); play responsibly. Your signs and key are stored in your browser; the site has no accounts. Visits are counted in aggregate with Cloudflare Web Analytics.',
+ home:'Home',away:'Away',newRound:'New round',demoName:'Example (made-up data)',demoStamp:'Made-up teams and odds',budget:'Budget',statAll:n=>`Chance of ${n}`,goalAll:n=>`Get all ${n} right`,goalMin:n=>`Get ${n} or more right`,oneIn:s=>`1 in ${s}`,atHome:'Home',awayGame:'Away',goalsIn:(g,c,p)=>`${g}-${c} in ${p}`,missing:n=>`${n} out`,form:{G:'W',E:'D',P:'L'},statLab:['P','GF','GA','Adjust %'],oddsOpt:'Odds (optional)',sofa:'Form, value and absences',muL:'League avg.',hvL:'Home XI value (€m)',avL:'Away XI value (€m)',hfL:'Home form',afL:'Away form',hbL:'Home absences',abL:'Away absences',homeOf:i=>`Home team, match ${i}`,awayOf:i=>`Away team, match ${i}`,signsOf:i=>`Signs, match ${i}`,xg:'expected goals',matchData:'Match data',realRes:'Actual result',plenoData:'Bonus match data',plRealH:'Home goals (actual)',plRealA:'Away goals (actual)',
+ cov:c=>`your signs cover only ${c}`,disagree:(a,b)=>`the model prefers ${a} and bookmakers ${b}`,have:s=>`you have ${s}`,noWarn:'No warnings: your signs cover at least 50% and the model and bookmakers agree on the favourite.',markFirst:'Mark your signs to see warnings.',modelL:'Model',booksL:'Bookmakers',modelOnly:'No odds: model only',noData:'No odds or goals: add them in Match data',xgL:(a,b)=>`Expected goals ${a} – ${b}`,noGoals:'No goals: rough guide only',yourPleno:(s,p)=>`Your bonus ${s}: ${p}%`,plHit:'Bonus hit',plMiss:'Bonus missed',kHits:(k,p)=>`${k} hits: ${p}%`,hitsRow:(k,pleno)=>`${k} hits${pleno?' (bonus eligible)':''}`,minOrMore:n=>`${n} or more`,
+ left:n=>`${n} ${pl(n,'match','es')} left`,mix:(t,d)=>`${t} ${pl(t,'triple')} · ${d} ${pl(d,'double')}`,mixAnd:(t,d)=>`${t} ${pl(t,'triple')} and ${d} ${pl(d,'double')}`,perBet:s=>`${s} per line`,markAll:'mark every match',minOf:(p,n)=>`${p}% of ${n} or more`,hitOf:(a,b)=>`${a} of ${b} right`,expOf:n=>`expected of ${n}`,bets:n=>pl(n,'line'),
+ calcDet:(t,d,b,n,pr)=>`3^${t} × 2^${d} = ${b} · ${t+d} of ${n} matches with several signs · ${pr} per line`,calcCorner:'Triples \\ Doubles',calcCell:(t,d,n,m)=>`${t} triples and ${d} doubles: ${n} lines, ${m}`,calcTooMany:n=>`The ticket has only ${n} matches`,
+ noPrice:'The price per line is missing in the ticket format.',noBudget:s=>`That budget doesn’t cover one line (${s}).`,allocRes:(b,mix,c,r,n,pa,m,pm)=>`${b} lines (${mix}): ${c}, ${r} left over. Chance of ${n}: ${pa}. Chance of ${m} or more: ${pm}%.`,allocNo:n=>` Warning: ${n} ${pl(n,'match','es')} without odds, so the calculation is less reliable there.`,allocEnd:' A higher chance doesn’t mean a higher expected prize.',
+ tDemo:'Example loaded',tApplied:'Doubles and triples applied',tSuggested:'Signs suggested',tFav:'Favourites marked',tCopyM:'Select and copy the text',tCopied:'Ticket copied',confirm:'Press again to confirm',tCleared:'Round cleared',tLoaded:'Round loaded',tDeleted:'Round deleted',tFormat:'Format updated',
+ groups:{'España':'Spain','Competiciones UEFA':'UEFA competitions','Selecciones':'National teams','Inglaterra':'England','Italia':'Italy','Alemania':'Germany','Francia':'France','Más de Europa':'More from Europe','Resto del mundo':'Rest of the world'},
+ names:{'Segunda':'LaLiga 2','Clasificación Eurocopa':'Euro qualifying','Eurocopa':'Euro','Clasificación Mundial (Europa)':'World Cup qualifying (Europe)','Mundial':'World Cup','Copa de la Liga':'EFL Cup','Copa de Francia':'Coupe de France','Bélgica':'Belgium','Escocia':'Scotland','Turquía':'Turkey','Grecia':'Greece','Suiza':'Switzerland','Dinamarca':'Denmark','Suecia':'Sweden','Noruega':'Norway','Polonia':'Poland','Brasil':'Brazil','México':'Mexico','Arabia Saudí':'Saudi Arabia'},
+ eBadResp:'Invalid response',eConn:'Couldn’t connect. Check your connection.',eNoKey:'The Odds API key is missing',eBadKey:'The Odds API rejected the key',eLimit:'The Odds API: out of credits or too many requests',eBadBody:'The Odds API: invalid response',eOther:s=>`The Odds API: ${s}`,eErr:n=>`error ${n}`,creditsLeft:n=>` Credits left: ${n}.`,noFilter:'No matches for that filter.',pickT:(a,b)=>`Your ticket (${a} of ${b})`,up:'Move up',down:'Move down',remove:'Remove',eNotHere:'This round wasn’t created here: choose its matches in New round',stampOdds:d=>`Average odds from The Odds API: ${d}`,oddsDone:(a,b)=>`Odds updated for ${a} of ${b} matches.`,noOdds:s=>`\nNo odds: ${s}.`,querying:'Loading…',keyOk:'Key is valid.',ePickComp:'Choose at least one competition',found:n=>`${n} ${pl(n,'match','es')} found.`,noDataNow:s=>` No data right now: ${s}.`,maxPicks:n=>`You already have ${n} matches. Remove one to add another.`,eFaltan:'Matches are missing',created:'Round created.',roundOf:d=>`Round of ${d}`,resDone:(a,b)=>`Results loaded for ${a} of ${b} matches. Data covers only the last 3 days.`}
+};
+function pickLang(){
+  let q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
+  if(LANGS.includes(q))return q;
+  try{const s=localStorage.getItem('qlab-lang');if(LANGS.includes(s))return s}catch(e){}
+  return String(navigator.language||'').toLowerCase().startsWith('es')?'es':'en';
+}
+let LANG=pickLang();
+const T=(k,...a)=>{const v=I18N[LANG][k];return typeof v==='function'?v(...a):v};
+const LOC=()=>LANG==='es'?'es-ES':(String(navigator.language||'').toLowerCase().startsWith('en')?navigator.language:'en-GB');
+const CURRENCIES=['EUR','USD','GBP','BRL','MXN','ARS','COP','CLP','PEN','CAD','AUD','CHF'];
+function defaultFmt(){
+  const nav=String(navigator.language||''),region=(nav.split('-')[1]||'').toUpperCase();
+  let tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+  if(region==='ES'||nav.toLowerCase()==='es'||['Europe/Madrid','Atlantic/Canary','Africa/Ceuta'].includes(tz))return {preset:'quiniela',n:14,pleno:true,cur:'EUR',min:10};
+  const cur={US:'USD',GB:'GBP',BR:'BRL',MX:'MXN',AR:'ARS',CO:'COP',CL:'CLP',PE:'PEN',CA:'CAD',AU:'AUD',CH:'CHF'}[region]||'EUR';
+  return {preset:'custom',n:14,pleno:false,cur,min:11};
+}
 const KEY='quiniela-lab-web-v1';
 const DATA_V='web-1';
 const SIGNS=['1','X','2'];
 const CAT=['0','1','2','M'];
-const blankM=(i,pl)=>Object.assign({h:pl?'Local':'Local '+i,a:pl?'Visitante':'Visitante '+i,hs:[0,0,0,0],as:[0,0,0,0],sel:'',odds:['','',''],mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:''},pl?{resH:'',resA:''}:{res:''});
+const blankM=(i,pleno)=>Object.assign({h:pleno?T('home'):T('home')+' '+i,a:pleno?T('away'):T('away')+' '+i,hs:[0,0,0,0],as:[0,0,0,0],sel:'',odds:['','',''],mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:''},pleno?{resH:'',resA:''}:{res:''});
 const EXAMPLE={
   id:'j1',
   dataV:DATA_V,
-  name:'Nueva jornada',
+  name:T('newRound'),
+  fmt:defaultFmt(),
   stamp:'',
   mktV:1,
-  params:{avg:1.5,prior:3,home:1.3,price:0.75,rho:-0.1,mkt:100,beta:0.15,wf:0},
+  params:{avg:1.5,prior:3,home:1.3,price:defaultFmt().preset==='quiniela'?0.75:1,rho:-0.1,mkt:100,beta:0.15,wf:0},
   matches:Array.from({length:14},(_,i)=>blankM(i+1)),
   pleno:blankM(15,true)
 };
@@ -387,16 +461,21 @@ const clone=o=>JSON.parse(JSON.stringify(o));
 let S=null;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!S||!Array.isArray(S.matches)||!S.pleno) S=clone(EXAMPLE);
+const QFMT={preset:'quiniela',n:14,pleno:true,cur:'EUR',min:10};
+const normFmt=n=>{if(!n.fmt)n.fmt=clone(QFMT);n.fmt.n=n.matches.length;return n};
+normFmt(S);
+const F=()=>S.fmt, need=()=>F().n+(F().pleno?1:0);
 if(S.params.rho==null)S.params.rho=-0.1;
 if(S.params.mkt==null)S.params.mkt=100;
 if(!S.id)S.id='j1';
 S.matches.concat([S.pleno]).forEach(m=>{if(!Array.isArray(m.odds))m.odds=['','','']});
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
-const $=id=>document.getElementById(id);
-const nf=(x,d=0)=>x.toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d});
+const $=id=>document.getElementById(id), d0=document;
+const nf=(x,d=0)=>x.toLocaleString(LOC(),{minimumFractionDigits:d,maximumFractionDigits:d});
+const money=x=>{try{return new Intl.NumberFormat(LOC(),{style:'currency',currency:F().cur}).format(x)}catch(e){return nf(x,2)+' '+F().cur}};
 const pct=x=>Math.round(x*100)+'%';
-const oneIn=p=>p<=0?'—':'1 entre '+nf(Math.max(1,Math.round(1/p)));
+const oneIn=p=>p<=0?'—':T('oneIn',nf(Math.max(1,Math.round(1/p))));
 const canon=s=>SIGNS.filter(c=>s.includes(c)).join('');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const FACT=[1];for(let i=1;i<=12;i++)FACT[i]=FACT[i-1]*i;
@@ -407,11 +486,11 @@ const formSum=s=>parseForm(s).reduce((a,x)=>({p:a.p+1,g:a.g+x.g,c:a.c+x.c}),{p:0
 const countList=s=>String(s||'').split(',').map(x=>x.trim()).filter(Boolean).length;
 function sideInfo(form,val,baj,cls){
   const fs=parseForm(form), last=fs.slice(0,5).reverse();
-  const chips=last.map(x=>{const k=x.g>x.c?'G':x.g===x.c?'E':'P';return `<span class="fc f${k}" title="${x.v==='H'?'En casa':'Fuera'} ${x.g}-${x.c}">${k}</span>`}).join('');
+  const chips=last.map(x=>{const k=x.g>x.c?'G':x.g===x.c?'E':'P';return `<span class="fc f${k}" title="${x.v==='H'?T('atHome'):T('awayGame')} ${x.g}-${x.c}">${T('form')[k]}</span>`}).join('');
   const t=formSum(form), bits=[];
-  if(t.p)bits.push(`${t.g}-${t.c} en ${t.p}`);
+  if(t.p)bits.push(T('goalsIn',t.g,t.c,t.p));
   if(+val>0)bits.push(`XI ${nf(+val,0)} M€`);
-  const n=countList(baj); if(n)bits.push(`${n} baja${n>1?'s':''}`);
+  const n=countList(baj); if(n)bits.push(T('missing',n));
   if(!chips&&!bits.length)return `<div class="fi-t ${cls}"></div>`;
   return `<div class="fi-t ${cls}"><span class="chips">${chips}</span><span class="fi-s mono">${esc(bits.join(' · '))}</span></div>`;
 }
@@ -455,45 +534,46 @@ const fav=p=>SIGNS.reduce((a,b)=>p[b]>p[a]?b:a,'1');
 
 /* Render estructura */
 function teamFields(m,side,id){
-  const arr=side==='hs'?m.hs:m.as, lab=['PJ','GF','GC','Ajuste %'];
-  return `<fieldset><legend>${side==='hs'?'Local':'Visitante'}</legend>`+
+  const arr=side==='hs'?m.hs:m.as, lab=T('statLab');
+  return `<fieldset><legend>${side==='hs'?T('home'):T('away')}</legend>`+
     lab.map((l,j)=>`<label class="field sm" for="${id}-${side}-${j}">${l}<input type="number" id="${id}-${side}-${j}" data-f="${side}" data-j="${j}" value="${arr[j]}" step="${j===3?5:1}" ${j===3?'min="-50" max="50"':'min="0"'}></label>`).join('')+
     `</fieldset>`;
 }
 function oddsFields(m,id){
-  return `<fieldset><legend>Cuotas (opcional)</legend>`+SIGNS.map((s,j)=>`<label class="field sm" for="${id}-o-${j}">${s}<input type="text" inputmode="decimal" id="${id}-o-${j}" data-f="odds" data-j="${j}" value="${esc(m.odds[j])}" placeholder="—"></label>`).join('')+`</fieldset>`;
+  return `<fieldset><legend>${T('oddsOpt')}</legend>`+SIGNS.map((s,j)=>`<label class="field sm" for="${id}-o-${j}">${s}<input type="text" inputmode="decimal" id="${id}-o-${j}" data-f="odds" data-j="${j}" value="${esc(m.odds[j])}" placeholder="—"></label>`).join('')+`</fieldset>`;
 }
 function sofaFields(m,id){
   const f=(k,l,w)=>`<label class="field ${w}" for="${id}-${k}">${l}<input id="${id}-${k}" data-f="${k}" value="${esc(m[k]==null?'':m[k])}"></label>`;
-  return `<fieldset class="sofa"><legend>Forma, valor y bajas</legend>${f('mu','Media comp.','sm')}${f('hv','Valor XI local (M€)','md')}${f('av','Valor XI visit. (M€)','md')}${f('hf','Forma local','wide')}${f('af','Forma visitante','wide')}${f('hb','Bajas local','wide')}${f('ab','Bajas visitante','wide')}</fieldset>`;
+  return `<fieldset class="sofa"><legend>${T('sofa')}</legend>${f('mu',T('muL'),'sm')}${f('hv',T('hvL'),'md')}${f('av',T('avL'),'md')}${f('hf',T('hfL'),'wide')}${f('af',T('afL'),'wide')}${f('hb',T('hbL'),'wide')}${f('ab',T('abL'),'wide')}</fieldset>`;
 }
 function renderBoard(){
   $('board').innerHTML=S.matches.map((m,i)=>`
   <article class="row" data-i="${i}">
     <div class="num">${i+1}</div>
     <div class="main">
-      <div class="teams"><input class="tn" data-k="h" id="m${i}-h" value="${esc(m.h)}" aria-label="Local partido ${i+1}"><span class="vs">–</span><input class="tn away" data-k="a" id="m${i}-a" value="${esc(m.a)}" aria-label="Visitante partido ${i+1}"></div>
-      ${m.ev?`<div class="when mono">${esc(fmtTime(m.ev.time))}</div>`:''}<div class="xg mono"><span data-x="h"></span><span>goles esperados</span><span data-x="a"></span></div>
+      <div class="teams"><input class="tn" data-k="h" id="m${i}-h" value="${esc(m.h)}" aria-label="${T('homeOf',i+1)}"><span class="vs">–</span><input class="tn away" data-k="a" id="m${i}-a" value="${esc(m.a)}" aria-label="${T('awayOf',i+1)}"></div>
+      ${m.ev?`<div class="when mono">${esc(fmtTime(m.ev.time))}</div>`:''}<div class="xg mono"><span data-x="h"></span><span>${T('xg')}</span><span data-x="a"></span></div>
       <div class="fi"></div>
     </div>
     <div class="barwrap"><div class="bar" aria-hidden="true"><span class="b1"></span><span class="bx"></span><span class="b2"></span></div><div class="mk mono"></div></div>
-    <div class="signs" role="group" aria-label="Signos partido ${i+1}">${SIGNS.map(s=>`<button class="sg" data-s="${s}" aria-pressed="false">${s}</button>`).join('')}</div>
-    <div class="edits"><details class="edit"><summary>Datos del partido</summary>
+    <div class="signs" role="group" aria-label="${T('signsOf',i+1)}">${SIGNS.map(s=>`<button class="sg" data-s="${s}" aria-pressed="false">${s}</button>`).join('')}</div>
+    <div class="edits"><details class="edit"><summary>${T('matchData')}</summary>
       <div class="edit-grid">${teamFields(m,'hs','m'+i)}${teamFields(m,'as','m'+i)}${oddsFields(m,'m'+i)}${sofaFields(m,'m'+i)}
-        <label class="field" for="m${i}-res">Resultado real<select id="m${i}-res" data-f="res"><option value="">—</option>${SIGNS.map(s=>`<option ${m.res===s?'selected':''}>${s}</option>`).join('')}</select></label>
+        <label class="field" for="m${i}-res">${T('realRes')}<select id="m${i}-res" data-f="res"><option value="">—</option>${SIGNS.map(s=>`<option ${m.res===s?'selected':''}>${s}</option>`).join('')}</select></label>
       </div>
     </details></div>
   </article>`).join('');
   const p=S.pleno;
   $('p-h').value=p.h; $('p-a').value=p.a;
-  $('pedit').innerHTML=`<details class="edit"><summary>Datos del pleno</summary><div class="edit-grid">${teamFields(p,'hs','pl')}${teamFields(p,'as','pl')}${oddsFields(p,'pl')}${sofaFields(p,'pl')}
-    <label class="field" for="pl-rh">Goles local (real)<select id="pl-rh" data-f="resH"><option value="">—</option>${CAT.map(c=>`<option ${p.resH===c?'selected':''}>${c}</option>`).join('')}</select></label>
-    <label class="field" for="pl-ra">Goles visitante (real)<select id="pl-ra" data-f="resA"><option value="">—</option>${CAT.map(c=>`<option ${p.resA===c?'selected':''}>${c}</option>`).join('')}</select></label>
+  $('pedit').innerHTML=`<details class="edit"><summary>${T('plenoData')}</summary><div class="edit-grid">${teamFields(p,'hs','pl')}${teamFields(p,'as','pl')}${oddsFields(p,'pl')}${sofaFields(p,'pl')}
+    <label class="field" for="pl-rh">${T('plRealH')}<select id="pl-rh" data-f="resH"><option value="">—</option>${CAT.map(c=>`<option ${p.resH===c?'selected':''}>${c}</option>`).join('')}</select></label>
+    <label class="field" for="pl-ra">${T('plRealA')}<select id="pl-ra" data-f="resA"><option value="">—</option>${CAT.map(c=>`<option ${p.resA===c?'selected':''}>${c}</option>`).join('')}</select></label>
   </div></details>`;
   $('jname').value=S.name;
+  renderFmt();
   renderSel();
   renderStart();
-  $('p-avg').value=S.params.avg; $('p-prior').value=S.params.prior; $('p-home').value=S.params.home; $('p-price').value=S.params.price; $('p-rho').value=S.params.rho; $('p-mkt').value=S.params.mkt; $('p-beta').value=S.params.beta; $('p-wf').value=S.params.wf; $('stamp').textContent=S.stamp||'';
+  $('p-avg').value=S.params.avg; $('p-prior').value=S.params.prior; $('p-home').value=S.params.home; $('p-price').value=S.params.price; $('p-rho').value=S.params.rho; $('p-mkt').value=S.params.mkt; $('p-beta').value=S.params.beta; $('p-wf').value=S.params.wf; $('stamp').textContent=S.stampAt?T('stampOdds',fmtStamp(S.stampAt)):(S.stamp||'');
   update();
 }
 
@@ -509,8 +589,8 @@ function update(){
     row.querySelector('[data-x="a"]').textContent=nf(r.la,2);
     row.querySelector('.fi').innerHTML=infoHtml(m);
     const mk=row.querySelector('.mk');
-    if(r.pk)mk.textContent=(hg?`Modelo ${SIGNS.map(s=>pct(r.pm[s])).join(' · ')} | `:'')+`Casas ${SIGNS.map(s=>pct(r.pk[s])).join(' · ')}`;
-    else mk.textContent=hg?'Sin cuotas: solo modelo':'Sin cuotas ni goles: añádelos en Datos del partido';
+    if(r.pk)mk.textContent=(hg?`${T('modelL')} ${SIGNS.map(s=>pct(r.pm[s])).join(' · ')} | `:'')+`${T('booksL')} ${SIGNS.map(s=>pct(r.pk[s])).join(' · ')}`;
+    else mk.textContent=hg?T('modelOnly'):T('noData');
     const segs=row.querySelectorAll('.bar span');
     SIGNS.forEach((s,k)=>{segs[k].style.flexBasis=(r.p[s]*100)+'%';segs[k].textContent=r.p[s]>=.11?pct(r.p[s]):'';segs[k].title=s+': '+pct(r.p[s])});
     row.querySelectorAll('.sg').forEach(b=>{const s=b.dataset.s,on=m.sel.includes(s);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);b.classList.toggle('fav',s===f);b.classList.toggle('real',m.res===s);b.title=s+' · '+pct(r.p[s])});
@@ -518,8 +598,8 @@ function update(){
     covs.push(c); exp+=c;
     if(m.sel&&!m.res){
       const why=[]; const fm=fav(r.pm), fk=r.pk?fav(r.pk):null;
-      if(c<.5)why.push(`tus signos cubren solo el ${pct(c)}`);
-      if(fk&&hasGoals(m)&&fm!==fk)why.push(`el modelo prefiere ${fm} y las casas ${fk}`);
+      if(c<.5)why.push(T('cov',pct(c)));
+      if(fk&&hasGoals(m)&&fm!==fk)why.push(T('disagree',fm,fk));
       if(why.length)review.push({i,m,c,why});
     }
     const n=m.sel.length; if(!n)empty++; else bets*=n; if(n===2)dob++; if(n===3)tri++;
@@ -527,7 +607,7 @@ function update(){
     if(m.res){realN++; if(m.sel.includes(m.res)){realHit++;row.classList.add('hit')} else row.classList.add('miss')}
   });
   review.sort((a,b)=>a.c-b.c);
-  $('review').innerHTML=review.length?review.map(x=>`<li><span class="rv-n mono">${x.i+1}</span><span><strong>${esc(x.m.h)} – ${esc(x.m.a)}</strong> (llevas ${esc(x.m.sel)}): ${esc(x.why.join('; '))}.</span></li>`).join(''):(S.matches.some(m=>m.sel)?'<li>Ningún aviso: tus signos cubren al menos el 50% y modelo y casas coinciden en el favorito.</li>':'<li>Marca tus signos para ver los avisos.</li>');
+  $('review').innerHTML=review.length?review.map(x=>`<li><span class="rv-n mono">${x.i+1}</span><span><strong>${esc(x.m.h)} – ${esc(x.m.a)}</strong> (${T('have',esc(x.m.sel))}): ${esc(x.why.join('; '))}.</span></li>`).join(''):(S.matches.some(m=>m.sel)?`<li>${T('noWarn')}</li>`:`<li>${T('markFirst')}</li>`);
   $('pfi').innerHTML=infoHtml(S.pleno);
   // Pleno
   const pr=model(S.pleno), g=pr.grid, mx=Math.max(...g.flat());
@@ -536,25 +616,26 @@ function update(){
     CAT.map((h,i)=>`<tr><th scope="row">${esc(S.pleno.h.slice(0,3))} ${h}</th>${CAT.map((a,j)=>{const k=h+'-'+a,v=g[i][j];return `<td><button class="cell ${S.pleno.sel===k?'on':''} ${real===k?'real':''}" data-cell="${k}" style="--a:${Math.round(8+v/mx*62)}%" aria-label="${h}-${a}: ${nf(v*100,1)}%">${nf(v*100,1)}%</button></td>`}).join('')}</tr>`).join('')+'</tbody>';
   const ps=S.pleno.sel?S.pleno.sel.split('-'):null;
   const pp=ps?g[CAT.indexOf(ps[0])][CAT.indexOf(ps[1])]:0;
-  $('plabel').textContent=`${hasGoals(S.pleno)?`Goles esperados ${nf(pr.lh,2)} – ${nf(pr.la,2)}`:'Sin goles: marcadores orientativos'} · 1 ${pct(pr.p['1'])} · X ${pct(pr.p['X'])} · 2 ${pct(pr.p['2'])}`+(ps?` · Tu pleno ${S.pleno.sel}: ${nf(pp*100,1)}%`:'')+(real?(real===S.pleno.sel?' · Pleno acertado':' · Pleno fallado'):'');
+  $('plabel').textContent=`${hasGoals(S.pleno)?T('xgL',nf(pr.lh,2),nf(pr.la,2)):T('noGoals')} · 1 ${pct(pr.p['1'])} · X ${pct(pr.p['X'])} · 2 ${pct(pr.p['2'])}`+(ps?` · ${T('yourPleno',S.pleno.sel,nf(pp*100,1))}`:'')+(real?(real===S.pleno.sel?` · ${T('plHit')}`:` · ${T('plMiss')}`):'');
   // Distribución
   let d=[1]; covs.forEach(c=>{const n=new Array(d.length+1).fill(0);d.forEach((v,k)=>{n[k]+=v*(1-c);n[k+1]+=v*c});d=n});
-  const dm=Math.max(...d);
-  $('chart').innerHTML=d.map((v,k)=>`<div class="col ${k>=10?'prize':''}" title="${k} aciertos: ${nf(v*100,2)}%"><span class="pv">${v>=.005?nf(v*100,0)+'%':''}</span><div class="bv" style="height:${v/dm*100}%"></div></div>`).join('');
+  const dm=Math.max(...d), nM=F().n, minH=Math.min(F().min,nM);
+  $('chart').innerHTML=d.map((v,k)=>`<div class="col ${k>=minH?'prize':''}" title="${T('kHits',k,nf(v*100,2))}"><span class="pv">${v>=.005?nf(v*100,0)+'%':''}</span><div class="bv" style="height:${v/dm*100}%"></div></div>`).join('');
   $('axis').innerHTML=d.map((v,k)=>`<span>${k}</span>`).join('');
   const atLeast=k=>d.slice(k).reduce((a,b)=>a+b,0);
-  $('prizes').innerHTML=[14,13,12,11,10].map(k=>`<tr><td>${k} aciertos${k===14?' (opta al pleno)':''}</td><td>${oneIn(d[k])}</td></tr>`).join('')+`<tr><td><strong>10 o más</strong></td><td><strong>${nf(atLeast(10)*100,1)}%</strong></td></tr>`;
+  $('prizes').innerHTML=Array.from({length:nM-minH+1},(_,i)=>nM-i).map(k=>`<tr><td>${T('hitsRow',k,k===nM&&F().pleno)}</td><td>${oneIn(d[k])}</td></tr>`).join('')+`<tr><td><strong>${T('minOrMore',minH)}</strong></td><td><strong>${nf(atLeast(minH)*100,1)}%</strong></td></tr>`;
   // Cabecera
   const price=+S.params.price||0;
-  if(empty){$('st-bets').textContent='—';$('st-cost').textContent='—';$('st-mix').textContent=`faltan ${empty} partido${empty>1?'s':''}`}
-  else{$('st-bets').textContent=nf(bets);$('st-cost').textContent=nf(bets*price,2)+' €';$('st-mix').textContent=`${tri} triple${tri!==1?'s':''} · ${dob} doble${dob!==1?'s':''}`}
-  $('st-price').textContent=nf(price,2)+' € por apuesta';
+  if(empty){$('st-bets').textContent='—';$('st-cost').textContent='—';$('st-mix').textContent=T('left',empty)}
+  else{$('st-bets').textContent=nf(bets);$('st-cost').textContent=money(bets*price);$('st-mix').textContent=T('mix',tri,dob)}
+  $('st-price').textContent=T('perBet',money(price));
   if(typeof renderCalc==='function'&&$('c-tri').value!=='')renderCalc();
   const p14=empty?0:covs.reduce((a,b)=>a*b,1);
-  $('st-p14').textContent=empty?'—':oneIn(p14).replace('1 entre ','1/');
-  $('st-p10').textContent=empty?'marca todos los partidos':nf(atLeast(10)*100,1)+'% de 10 o más';
+  $('st-pall-k').textContent=T('statAll',nM);
+  $('st-p14').textContent=empty||p14<=0?'—':'1/'+nf(Math.max(1,Math.round(1/p14)));
+  $('st-p10').textContent=empty?T('markAll'):T('minOf',nf(atLeast(minH)*100,1),minH);
   $('st-exp').textContent=nf(exp,1);
-  $('st-real').textContent=realN?`${realHit} de ${realN} acertados`:'esperados de 14';
+  $('st-real').textContent=realN?T('hitOf',realHit,realN):T('expOf',nM);
 }
 
 /* Eventos */
@@ -608,7 +689,7 @@ function allocate(sorted,maxBets,goal){
   for(let t=0;t<=n&&Math.pow(3,t)<=maxBets;t++)for(let d=0;d+t<=n&&Math.pow(3,t)*Math.pow(2,d)<=maxBets;d++){
     const gain=goal==='p14'?(p,k)=>Math.log(Math.max(covOf(p,k),1e-12)):(p,k)=>covOf(p,k);
     const ks=bestPlacement(sorted,d,t,gain),cs=ks.map((k,i)=>covOf(sorted[i],k)),dist=hitDist(cs);
-    const p14=cs.reduce((a,b)=>a*b,1),p10=dist.slice(10).reduce((a,b)=>a+b,0),bets=Math.pow(3,t)*Math.pow(2,d);
+    const p14=cs.reduce((a,b)=>a*b,1),p10=dist.slice(Math.min(F().min,n)).reduce((a,b)=>a+b,0),bets=Math.pow(3,t)*Math.pow(2,d);
     const score=goal==='p14'?p14:p10;
     if(!best||score>best.score+1e-12||(Math.abs(score-best.score)<=1e-12&&bets<best.bets))best={score,ks,p14,p10,bets,d,t};
   }
@@ -624,35 +705,37 @@ function renderStart(){
 }
 $('b-demo').addEventListener('click',()=>{
   const h=archive();
-  if(h.demo){S=normState(h.demo)}else{
-    S={id:'demo',demo:true,dataV:DATA_V,mktV:1,name:'Ejemplo (datos inventados)',stamp:'Equipos y cuotas inventados',params:S.params,matches:DEMO.slice(0,14).map((d,i)=>demoM(d,i)),pleno:demoM(DEMO[14],14,true)};
+  if(h.demo){S=normState(h.demo);relabel(S)}else{
+    const nD=Math.min(F().n,14),fD=Object.assign(clone(F()),{n:nD,min:Math.min(F().min,nD)});
+    S={id:'demo',demo:true,dataV:DATA_V,mktV:1,name:T('demoName'),stamp:T('demoStamp'),fmt:fD,params:S.params,matches:DEMO.slice(0,nD).map((d,i)=>demoM(d,i)),pleno:demoM(DEMO[14],14,true)};
     suggest(0,0);
   }
-  save();renderBoard();window.scrollTo(0,0);toast('Ejemplo cargado');
+  save();renderBoard();window.scrollTo(0,0);toast(T('tDemo'));
 });
 $('b-real').addEventListener('click',()=>{const k=$('keysbox'),p=$('pickbox');if(k)k.open=true;if(p)p.open=true;const y=$('sync');if(y&&!y.hidden)y.scrollIntoView({behavior:'smooth'})});
 
 /* Calculadora de dobles y triples */
 const CALC_T=[0,1,2,3,4,5,6],CALC_D=[0,1,2,3,4,5,6,7,8];
-const euros=x=>nf(x,2)+' €';
 function renderCalc(){
   const price=+S.params.price||0,t=+$('c-tri').value||0,d=+$('c-dob').value||0,b=Math.pow(3,t)*Math.pow(2,d);
-  $('c-bets').textContent=nf(b)+(b===1?' apuesta':' apuestas')+' · '+euros(b*price);
-  $('c-det').textContent=`3^${t} × 2^${d} = ${nf(b)} · ${t+d} de 14 partidos con varios signos · ${euros(price)} por apuesta`;
-  $('c-table').innerHTML='<thead><tr><th scope="col">Triples \\ Dobles</th>'+CALC_D.map(x=>`<th scope="col">${x}</th>`).join('')+'</tr></thead><tbody>'+CALC_T.map(tt=>`<tr><th scope="row">${tt}</th>`+CALC_D.map(dd=>{const n=Math.pow(3,tt)*Math.pow(2,dd),on=tt===t&&dd===d;return `<td><button class="calc-c${on?' on':''}" data-t="${tt}" data-d="${dd}" aria-pressed="${on}" aria-label="${tt} triples y ${dd} dobles: ${n} apuestas, ${euros(n*price)}">${nf(n)}<small>${euros(n*price)}</small></button></td>`}).join('')+'</tr>').join('')+'</tbody>';
+  const nM=F().n;
+  $('c-bets').textContent=nf(b)+' '+T('bets',b)+' · '+money(b*price);
+  $('c-det').textContent=t+d>nM?T('calcTooMany',nM):T('calcDet',t,d,nf(b),nM,money(price));
+  $('c-apply').disabled=t+d>nM;
+  $('c-table').innerHTML=`<thead><tr><th scope="col">${esc(T('calcCorner'))}</th>`+CALC_D.map(x=>`<th scope="col">${x}</th>`).join('')+'</tr></thead><tbody>'+CALC_T.map(tt=>`<tr><th scope="row">${tt}</th>`+CALC_D.map(dd=>{const n=Math.pow(3,tt)*Math.pow(2,dd),on=tt===t&&dd===d;return `<td><button class="calc-c${on?' on':''}" data-t="${tt}" data-d="${dd}" aria-pressed="${on}" ${tt+dd>nM?'disabled ':''}aria-label="${esc(T('calcCell',tt,dd,n,money(n*price)))}">${nf(n)}<small>${esc(money(n*price))}</small></button></td>`}).join('')+'</tr>').join('')+'</tbody>';
 }
 $('c-tri').innerHTML=CALC_T.map(x=>`<option>${x}</option>`).join('');
 $('c-dob').innerHTML=CALC_D.map(x=>`<option>${x}</option>`).join('');
 $('c-tri').value='1';$('c-dob').value='1';
 $('c-tri').addEventListener('change',renderCalc);$('c-dob').addEventListener('change',renderCalc);
 $('c-table').addEventListener('click',e=>{const c=e.target.closest('[data-t]');if(!c)return;$('c-tri').value=c.dataset.t;$('c-dob').value=c.dataset.d;renderCalc()});
-$('c-apply').addEventListener('click',()=>{suggest(+$('c-tri').value,+$('c-dob').value);save();update();toast('Dobles y triples aplicados')});
+$('c-apply').addEventListener('click',()=>{suggest(+$('c-tri').value,+$('c-dob').value);save();update();toast(T('tApplied'))});
 let undoSel=null;
 function allocMsg(t,err){$('allocmsg').textContent=t;$('allocmsg').classList.toggle('err',!!err)}
 $('b-alloc').addEventListener('click',()=>{
   const price=+S.params.price||0,eur=parseFloat(String($('b-eur').value).replace(',','.'));
-  if(!(price>0)){allocMsg('Falta el precio por apuesta en los parámetros.',true);return}
-  if(!(eur>=price)){allocMsg('Con ese presupuesto no llega para una apuesta ('+nf(price,2)+' €).',true);return}
+  if(!(price>0)){allocMsg(T('noPrice'),true);return}
+  if(!(eur>=price)){allocMsg(T('noBudget',money(price)),true);return}
   const maxBets=Math.floor(eur/price+1e-9);
   const rows=S.matches.map(m=>{const p=model(m).p,o=[...SIGNS].sort((a,b)=>p[b]-p[a]);return{o,p:o.map(c=>p[c]),hasOdds:!!market(m)}});
   const goal=$('b-goal').value,b=allocate(rows.map(r=>r.p),maxBets,goal);
@@ -660,24 +743,24 @@ $('b-alloc').addEventListener('click',()=>{
   S.matches.forEach((m,i)=>{m.sel=canon(rows[i].o.slice(0,b.ks[i]).join(''))});
   save();update();$('b-undo').hidden=false;
   const noOdds=rows.filter(r=>!r.hasOdds).length, cost=b.bets*price;
-  allocMsg(`${nf(b.bets)} apuestas (${b.t} triple${b.t!==1?'s':''} y ${b.d} doble${b.d!==1?'s':''}): ${nf(cost,2)} €, sobran ${nf(eur-cost,2)} €. Prob. de 14: ${oneIn(b.p14)}. Prob. de 10 o más: ${nf(b.p10*100,1)}%.`+(noOdds?` Aviso: ${noOdds} partido${noOdds>1?'s':''} sin cuotas, ahí el cálculo es menos fiable.`:'')+' Más probabilidad no significa más premio esperado.');
+  const nM=F().n,minH=Math.min(F().min,nM);allocMsg(T('allocRes',nf(b.bets),T('mixAnd',b.t,b.d),money(cost),money(eur-cost),nM,oneIn(b.p14),minH,nf(b.p10*100,1))+(noOdds?T('allocNo',noOdds):'')+T('allocEnd'));
 });
 $('b-undo').addEventListener('click',()=>{if(!undoSel)return;S.matches.forEach((m,i)=>{m.sel=undoSel[i]});undoSel=null;$('b-undo').hidden=true;allocMsg('');save();update()});
 
 let toastT;function toast(msg){$('toast').textContent=msg;clearTimeout(toastT);toastT=setTimeout(()=>$('toast').textContent='',2600)}
-$('b-suggest').addEventListener('click',()=>{suggest(+$('n-tri').value,+$('n-dob').value);save();update();toast('Signos sugeridos')});
-$('b-fav').addEventListener('click',()=>{suggest(0,0);save();update();toast('Marcados los favoritos')});
+$('b-suggest').addEventListener('click',()=>{suggest(+$('n-tri').value,+$('n-dob').value);save();update();toast(T('tSuggested'))});
+$('b-fav').addEventListener('click',()=>{suggest(0,0);save();update();toast(T('tFav'))});
 $('b-copy').addEventListener('click',()=>{
   const lines=S.matches.map((m,i)=>`${String(i+1).padStart(2,' ')}. ${m.h} - ${m.a}: ${m.sel||'—'}`);
-  lines.push(`P15. ${S.pleno.h} - ${S.pleno.a}: ${S.pleno.sel||'—'}`);
-  lines.push('',`${$('st-bets').textContent} apuestas · ${$('st-cost').textContent}`);
+  if(F().pleno)lines.push(`P15. ${S.pleno.h} - ${S.pleno.a}: ${S.pleno.sel||'—'}`);
+  lines.push('',`${$('st-bets').textContent} ${T('bets',2)} · ${$('st-cost').textContent}`);
   const txt=S.name+'\n\n'+lines.join('\n');
   const out=$('copyout');
-  const fallback=()=>{out.hidden=false;out.value=txt;out.focus();out.select();toast('Selecciona y copia el texto')};
-  try{navigator.clipboard.writeText(txt).then(()=>{out.hidden=true;toast('Boleto copiado')},fallback)}catch(err){fallback()}
+  const fallback=()=>{out.hidden=false;out.value=txt;out.focus();out.select();toast(T('tCopyM'))};
+  try{navigator.clipboard.writeText(txt).then(()=>{out.hidden=true;toast(T('tCopied'))},fallback)}catch(err){fallback()}
 });
-function twoStep(btn,label,fn){let armed=false,t;btn.addEventListener('click',()=>{if(!armed){armed=true;btn.textContent='Pulsa otra vez para confirmar';t=setTimeout(()=>{armed=false;btn.textContent=label},3000);return}clearTimeout(t);armed=false;btn.textContent=label;fn()})}
-twoStep($('b-clear'),'Vaciar jornada',()=>{if(S.demo){S.id='j'+Date.now();S.demo=false}S.name='Nueva jornada';S.stamp='';S.matches=S.matches.map((m,i)=>({h:'Local '+(i+1),a:'Visitante '+(i+1),hs:[0,0,0,0],as:[0,0,0,0],sel:'',res:'',odds:['','',''],mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:''}));S.pleno={h:'Local',a:'Visitante',hs:[0,0,0,0],as:[0,0,0,0],sel:'',resH:'',resA:'',odds:['','',''],mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:''};save();renderBoard();toast('Jornada vaciada')});
+function twoStep(btn,key,fn){let armed=false,t;btn.addEventListener('click',()=>{if(!armed){armed=true;btn.textContent=T('confirm');t=setTimeout(()=>{armed=false;btn.textContent=T(key)},3000);return}clearTimeout(t);armed=false;btn.textContent=T(key);fn()})}
+twoStep($('b-clear'),'clearRound',()=>{if(S.demo){S.id='j'+Date.now();S.demo=false}S.name=T('newRound');S.stamp='';delete S.stampAt;S.matches=S.matches.map((m,i)=>blankM(i+1));S.pleno=blankM(15,true);save();renderBoard();toast(T('tCleared'))});
 
 
 /* Historial de jornadas */
@@ -690,9 +773,9 @@ function renderSel(){
   $('jsel').innerHTML=Object.keys(h).map(id=>`<option value="${esc(id)}"${id===S.id?' selected':''}>${esc(h[id].name||id)}</option>`).join('');
   $('b-jdel').disabled=Object.keys(h).length<2;
 }
-function normState(n){n.matches.concat([n.pleno]).forEach(m=>{if(!Array.isArray(m.odds))m.odds=['','','']});return n}
-$('jsel').addEventListener('change',e=>{const h=archive(),n=h[e.target.value];if(!n)return;S=normState(n);save();renderBoard();toast('Jornada cargada')});
-twoStep($('b-jdel'),'Borrar jornada',()=>{const h=archive(),ids=Object.keys(h);if(ids.length<2)return;delete h[S.id];writeHist(h);S=normState(h[Object.keys(h)[0]]);save();renderBoard();toast('Jornada borrada')});
+function normState(n){normFmt(n);n.matches.concat([n.pleno]).forEach(m=>{if(!Array.isArray(m.odds))m.odds=['','','']});return n}
+$('jsel').addEventListener('change',e=>{const h=archive(),n=h[e.target.value];if(!n)return;S=normState(n);save();renderBoard();toast(T('tLoaded'))});
+twoStep($('b-jdel'),'delRound',()=>{const h=archive(),ids=Object.keys(h);if(ids.length<2)return;delete h[S.id];writeHist(h);S=normState(h[Object.keys(h)[0]]);save();renderBoard();toast(T('tDeleted'))});
 
 /* Datos en línea (solo en la app de Android) */
 const COMPS=[
@@ -706,43 +789,46 @@ const COMPS=[
  {g:'Más de Europa',k:'soccer_portugal_primeira_liga',n:'Portugal'},{g:'Más de Europa',k:'soccer_netherlands_eredivisie',n:'Eredivisie'},{g:'Más de Europa',k:'soccer_belgium_first_div',n:'Bélgica'},{g:'Más de Europa',k:'soccer_spl',n:'Escocia'},{g:'Más de Europa',k:'soccer_turkey_super_league',n:'Turquía'},{g:'Más de Europa',k:'soccer_greece_super_league',n:'Grecia'},{g:'Más de Europa',k:'soccer_austria_bundesliga',n:'Austria'},{g:'Más de Europa',k:'soccer_switzerland_superleague',n:'Suiza'},{g:'Más de Europa',k:'soccer_denmark_superliga',n:'Dinamarca'},{g:'Más de Europa',k:'soccer_sweden_allsvenskan',n:'Suecia'},{g:'Más de Europa',k:'soccer_norway_eliteserien',n:'Noruega'},{g:'Más de Europa',k:'soccer_poland_ekstraklasa',n:'Polonia'},
  {g:'Resto del mundo',k:'soccer_argentina_primera_division',n:'Argentina'},{g:'Resto del mundo',k:'soccer_brazil_campeonato',n:'Brasil'},{g:'Resto del mundo',k:'soccer_mexico_ligamx',n:'México'},{g:'Resto del mundo',k:'soccer_usa_mls',n:'MLS'},{g:'Resto del mundo',k:'soccer_saudi_arabia_pro_league',n:'Arabia Saudí'}];
 const compBy=k=>COMPS.find(c=>c.k===k);
+const compName=k=>{const c=compBy(k);return c?(T('names')[c.n]||c.n):k};
 const KEYS='quiniela-lab-web-keys';
 function getKeys(){try{return JSON.parse(localStorage.getItem(KEYS))||{}}catch(e){return {}}}
 function setKeys(k){try{localStorage.setItem(KEYS,JSON.stringify(k))}catch(e){}}
 let reqN=0; const pending={};
-window.__qlCb=(id,txt)=>{const f=pending[id];if(f){delete pending[id];let o;try{o=JSON.parse(txt)}catch(e){o={status:0,error:'Respuesta no válida'}}f(o)}};
+window.__qlCb=(id,txt)=>{const f=pending[id];if(f){delete pending[id];let o;try{o=JSON.parse(txt)}catch(e){o={status:0,error:T('eBadResp')}}f(o)}};
 const nativeGet=(url,hn,hv)=>new Promise(res=>{const id='r'+(++reqN);pending[id]=res;window.QLNative.get(id,url,hn||'',hv||'')});
 const ODDS='https://api.the-odds-api.com/v4/sports/';
 function logMsg(t,err){const l=$('synclog');l.textContent=t;l.classList.toggle('err',!!err)}
 const scrub=(t,k)=>k?String(t).split(k).join('•••'):String(t);
+const fatal=m=>{const e=new Error(m);e.fatal=true;return e};
 async function oddsGet(path,params){
-  const key=getKeys().odds; if(!key)throw new Error('Falta la clave de The Odds API');
+  const key=getKeys().odds; if(!key)throw fatal(T('eNoKey'));
   const q=new URLSearchParams(Object.assign({apiKey:key},params||{}));
   const r=await nativeGet(ODDS+path+'?'+q.toString());
   if(r.error)throw new Error(scrub(r.error,key));
-  if(r.status===401)throw new Error('The Odds API no acepta la clave');
-  if(r.status===429)throw new Error('The Odds API: sin créditos o demasiadas peticiones');
-  let d;try{d=JSON.parse(r.body)}catch(e){throw new Error('The Odds API: respuesta no válida')}
-  if(r.status!==200)throw new Error('The Odds API: '+scrub(d.message||('error '+r.status),key));
+  if(r.status===401)throw fatal(T('eBadKey'));
+  if(r.status===429)throw fatal(T('eLimit'));
+  let d;try{d=JSON.parse(r.body)}catch(e){throw new Error(T('eBadBody'))}
+  if(r.status!==200)throw new Error(T('eOther',scrub(d.message||T('eErr',r.status),key)));
   if(r.remaining!=null&&r.remaining!=='')oddsLeft=r.remaining;
   return d;
 }
 let oddsLeft=null;
-const leftTxt=()=>oddsLeft!=null?` Créditos restantes: ${oddsLeft}.`:'';
+const leftTxt=()=>oddsLeft!=null?T('creditsLeft',oddsLeft):'';
+const fmtStamp=d=>{try{return new Date(d).toLocaleString(LOC(),{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return d}};
 const isoZ=d=>d.toISOString().replace(/\.\d+Z$/,'Z');
-const fmtTime=t=>{try{return new Date(t).toLocaleString('es-ES',{weekday:'short',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return t}};
+const fmtTime=t=>{try{return new Date(t).toLocaleString(LOC(),{weekday:'short',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return t}};
 /* Elegir partidos */
 let events=[],picks=[];
-function evHtml(e){const on=picks.some(p=>p.id===e.id);return `<button class="evt${on?' on':''}" data-ev="${esc(e.id)}" aria-pressed="${on}">${esc(e.home_team)} – ${esc(e.away_team)}<small>${esc(fmtTime(e.commence_time))} · ${esc((compBy(e.sport_key)||{}).n||e.sport_key)}</small></button>`}
+function evHtml(e){const on=picks.some(p=>p.id===e.id);return `<button class="evt${on?' on':''}" data-ev="${esc(e.id)}" aria-pressed="${on}">${esc(e.home_team)} – ${esc(e.away_team)}<small>${esc(fmtTime(e.commence_time))} · ${esc(compName(e.sport_key))}</small></button>`}
 function renderEvents(){
   const f=$('p-filter').value.trim().toLowerCase();
   const list=events.filter(e=>!f||(e.home_team+' '+e.away_team).toLowerCase().includes(f));
-  $('evlist').innerHTML=list.length?list.map(evHtml).join(''):'<p class="sub">No hay partidos con ese filtro.</p>';
+  $('evlist').innerHTML=list.length?list.map(evHtml).join(''):`<p class="sub">${T('noFilter')}</p>`;
 }
 function renderPicks(){
-  $('pick-h').textContent=`Tu quiniela (${picks.length} de 15)`;
-  $('picks').innerHTML=picks.map((e,i)=>`<li><span class="pn">${i<14?i+1:'P15'}</span><span class="pt">${esc(e.home_team)} – ${esc(e.away_team)}</span><button class="mini" data-mv="${i},-1" aria-label="Subir">↑</button><button class="mini" data-mv="${i},1" aria-label="Bajar">↓</button><button class="mini" data-rm="${i}" aria-label="Quitar">×</button></li>`).join('');
-  $('b-create').disabled=picks.length!==15;
+  $('pick-h').textContent=T('pickT',picks.length,need());
+  $('picks').innerHTML=picks.map((e,i)=>`<li><span class="pn">${i<F().n?i+1:'P'+(F().n+1)}</span><span class="pt">${esc(e.home_team)} – ${esc(e.away_team)}</span><button class="mini" data-mv="${i},-1" aria-label="${T('up')}">↑</button><button class="mini" data-mv="${i},1" aria-label="${T('down')}">↓</button><button class="mini" data-rm="${i}" aria-label="${T('remove')}">×</button></li>`).join('');
+  $('b-create').disabled=picks.length!==need();
 }
 const blank=e=>({h:e.home_team,a:e.away_team,hs:[0,0,0,0],as:[0,0,0,0],sel:'',odds:['','',''],mu:'',hv:'',av:'',hf:'',af:'',hb:'',ab:'',ev:{id:e.id,sport:e.sport_key,time:e.commence_time}});
 const liveMatches=()=>S.matches.concat([S.pleno]).filter(m=>m.ev&&m.ev.id);
@@ -755,18 +841,22 @@ function avgOdds(ev){
   return {o:[av(acc.h),av(acc.d),av(acc.a)],n:Math.max(acc.h.length,acc.d.length,acc.a.length)};
 }
 async function updateOdds(){
-  const ms=liveMatches(); if(!ms.length)throw new Error('Esta jornada no se creó desde aquí: elige sus partidos en Nueva jornada');
+  const ms=liveMatches(); if(!ms.length)throw new Error(T('eNotHere'));
   const g=bySport(ms); let done=0,miss=[];
   for(const sp of Object.keys(g)){
     const d=await oddsGet(sp+'/odds/',{regions:'eu',markets:'h2h',oddsFormat:'decimal',eventIds:g[sp].map(m=>m.ev.id).join(',')});
     g[sp].forEach(m=>{const ev=d.find(x=>x.id===m.ev.id),a=ev&&avgOdds(ev);if(a){m.odds=a.o;done++}else miss.push(m.h+' – '+m.a)});
   }
-  S.stamp='Cuotas medias de The Odds API: '+new Date().toLocaleString('es-ES',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'});
+  S.stamp='';S.stampAt=new Date().toISOString();
   save();renderBoard();
-  return `Cuotas actualizadas en ${done} de ${ms.length} partidos.`+leftTxt()+(miss.length?`\nSin cuotas: ${miss.join(', ')}.`:'');
+  return T('oddsDone',done,ms.length)+leftTxt()+(miss.length?T('noOdds',miss.join(', ')):'');
 }
-function busy(btn,fn){return async()=>{if(btn.disabled)return;btn.disabled=true;logMsg('Consultando…');try{logMsg(await fn())}catch(e){logMsg(e.message||String(e),true)}btn.disabled=false;if(btn===$('b-create'))$('b-create').disabled=picks.length!==15}}
-if(!window.QLNative&&window.fetch)window.QLNative={get(id,url,hn,hv){fetch(url,{headers:hn?{[hn]:hv}:{}}).then(async x=>({status:x.status,body:await x.text(),remaining:x.headers.get('x-requests-remaining')})).catch(()=>({status:0,error:'No se ha podido conectar. Revisa tu conexión.'})).then(o=>window.__qlCb(id,JSON.stringify(o)))}};
+function busy(btn,fn){return async()=>{if(btn.disabled)return;btn.disabled=true;logMsg(T('querying'));try{logMsg(await fn())}catch(e){logMsg(e.message||String(e),true)}btn.disabled=false;if(btn===$('b-create'))$('b-create').disabled=picks.length!==need()}}
+if(!window.QLNative&&window.fetch)window.QLNative={get(id,url,hn,hv){fetch(url,{headers:hn?{[hn]:hv}:{}}).then(async x=>({status:x.status,body:await x.text(),remaining:x.headers.get('x-requests-remaining')})).catch(()=>({status:0,error:T('eConn')})).then(o=>window.__qlCb(id,JSON.stringify(o)))}};
+function renderComps(){
+  const prev=$('comps').children.length?new Set([...$('comps').querySelectorAll('input:checked')].map(i=>i.value)):null;
+  $('comps').innerHTML=[...new Set(COMPS.map(c=>c.g))].map(g=>`<fieldset class="comp-g"><legend>${esc(T('groups')[g]||g)}</legend><div class="comp-l">${COMPS.filter(c=>c.g===g).map(c=>`<label><input type="checkbox" value="${c.k}"${(prev?prev.has(c.k):c.on)?' checked':''}>${esc(T('names')[c.n]||c.n)}</label>`).join('')}</div></fieldset>`).join('');
+}
 function initSync(){
   if(!window.QLNative)return;
   $('sync').hidden=false;
@@ -775,42 +865,42 @@ function initSync(){
   if(!liveMatches().length)$('pickbox').open=true;
   const saveK=()=>setKeys({odds:$('k-odds').value.trim()});
   $('k-odds').addEventListener('change',saveK);
-  $('comps').innerHTML=[...new Set(COMPS.map(c=>c.g))].map(g=>`<fieldset class="comp-g"><legend>${esc(g)}</legend><div class="comp-l">${COMPS.filter(c=>c.g===g).map(c=>`<label><input type="checkbox" value="${c.k}"${c.on?' checked':''}>${esc(c.n)}</label>`).join('')}</div></fieldset>`).join('');
+  renderComps();
   $('b-keytest').addEventListener('click',busy($('b-keytest'),async()=>{
     saveK();
-    if(!getKeys().odds)throw new Error('Falta la clave de The Odds API');
+    if(!getKeys().odds)throw fatal(T('eNoKey'));
     await oddsGet('',{});
-    return 'Clave correcta.'+leftTxt();
+    return T('keyOk')+leftTxt();
   }));
   $('b-find').addEventListener('click',busy($('b-find'),async()=>{
     saveK();
-    const sel=[...$('comps').querySelectorAll('input:checked')].map(i=>i.value); if(!sel.length)throw new Error('Elige al menos una competición');
+    const sel=[...$('comps').querySelectorAll('input:checked')].map(i=>i.value); if(!sel.length)throw new Error(T('ePickComp'));
     const now=new Date(),to=new Date(now.getTime()+864e5*(+$('p-days').value));
     const all=[],skipped=[];
     for(const sp of sel){
       try{const d=await oddsGet(sp+'/events',{commenceTimeFrom:isoZ(now),commenceTimeTo:isoZ(to)});d.forEach(e=>all.push(e))}
-      catch(err){if(/clave|sin créditos/i.test(err.message))throw err;skipped.push((compBy(sp)||{}).n||sp)}
+      catch(err){if(err.fatal)throw err;skipped.push(compName(sp))}
     }
     events=all.sort((a,b)=>String(a.commence_time).localeCompare(String(b.commence_time)));
     renderEvents();
-    return `${events.length} partidos encontrados.`+(skipped.length?` Sin datos ahora: ${skipped.join(', ')}.`:'')+leftTxt();
+    return T('found',events.length)+(skipped.length?T('noDataNow',skipped.join(', ')):'')+leftTxt();
   }));
   $('p-filter').addEventListener('input',renderEvents);
   $('evlist').addEventListener('click',e=>{const b=e.target.closest('[data-ev]');if(!b)return;const id=b.dataset.ev,i=picks.findIndex(p=>p.id===id);
-    if(i>=0)picks.splice(i,1);else{if(picks.length>=15){logMsg('Ya tienes 15 partidos. Quita uno para añadir otro.',true);return}picks.push(events.find(x=>x.id===id))}
+    if(i>=0)picks.splice(i,1);else{if(picks.length>=need()){logMsg(T('maxPicks',need()),true);return}picks.push(events.find(x=>x.id===id))}
     renderEvents();renderPicks()});
   $('picks').addEventListener('click',e=>{const m=e.target.closest('[data-mv]'),r=e.target.closest('[data-rm]');
     if(m){const[i,d]=m.dataset.mv.split(',').map(Number),j=i+d;if(j>=0&&j<picks.length){[picks[i],picks[j]]=[picks[j],picks[i]];renderPicks()}}
     if(r){picks.splice(+r.dataset.rm,1);renderEvents();renderPicks()}});
   $('b-create').addEventListener('click',busy($('b-create'),async()=>{
-    if(picks.length!==15)throw new Error('Faltan partidos');
+    if(picks.length!==need())throw new Error(T('eFaltan'));
     archive();
-    const pl=blank(picks[14]);delete pl.res;pl.resH='';pl.resA='';
-    S={id:'j'+Date.now(),dataV:DATA_V,mktV:1,name:$('p-name').value.trim()||('Jornada del '+new Date(picks[0].commence_time).toLocaleDateString('es-ES')),stamp:'',params:S.params,
-       matches:picks.slice(0,14).map(e=>Object.assign(blank(e),{res:''})),pleno:pl};
+    const fN=clone(F()),nN=fN.n;let pln;if(fN.pleno){pln=blank(picks[nN]);delete pln.res;pln.resH='';pln.resA=''}else pln=blankM(15,true);
+    S={id:'j'+Date.now(),dataV:DATA_V,mktV:1,name:$('p-name').value.trim()||T('roundOf',new Date(picks[0].commence_time).toLocaleDateString(LOC())),stamp:'',fmt:fN,params:S.params,
+       matches:picks.slice(0,nN).map(e=>Object.assign(blank(e),{res:''})),pleno:pln};
     save();renderBoard();
-    picks=[];events=[];renderPicks();$('evlist').innerHTML='<p class="sub">Jornada creada.</p>';$('p-name').value='';$('pickbox').open=false;
-    return 'Jornada creada. '+await updateOdds();
+    picks=[];events=[];renderPicks();$('evlist').innerHTML=`<p class="sub">${T('created')}</p>`;$('p-name').value='';$('pickbox').open=false;
+    return T('created')+' '+await updateOdds();
   }));
   $('b-odds').addEventListener('click',busy($('b-odds'),updateOdds));
   $('b-results').addEventListener('click',busy($('b-results'),async()=>{
@@ -823,13 +913,68 @@ function initSync(){
         if(m===S.pleno){m.resH=gh>2?'M':String(gh);m.resA=ga>2?'M':String(ga)}else m.res=gh>ga?'1':gh===ga?'X':'2';done++});
     }
     save();renderBoard();
-    return `Resultados cargados en ${done} de ${ms.length} partidos. Solo hay datos de los últimos 3 días.`+leftTxt();
+    return T('resDone',done,ms.length)+leftTxt();
   }));
   renderPicks();
 }
+/* Formato del boleto e idioma */
+function renderFmt(){
+  const f=F(),q=f.preset==='quiniela';
+  $('f-preset').value=f.preset;
+  $('f-n').value=f.n;$('f-min').value=f.min;
+  if(!$('f-cur').options.length)$('f-cur').innerHTML=CURRENCIES.map(c=>`<option>${c}</option>`).join('');
+  $('f-cur').value=f.cur;
+  ['f-n','f-min','f-cur','p-price'].forEach(id=>{$(id).disabled=q});
+  $('f-min').max=f.n;
+  $('pleno').hidden=!f.pleno;$('lower').classList.toggle('solo',!f.pleno);
+  $('lead').textContent=q?T('leadQ'):T('leadC');
+  $('b-eur-l').textContent=T('budget')+' ('+f.cur+')';
+  const pr=+S.params.price||0;$('b-eur').step=pr>0?String(pr):'any';
+  const mh=Math.min(f.min,f.n);
+  $('b-goal').options[0].textContent=T('goalAll',f.n);$('b-goal').options[1].textContent=T('goalMin',mh);
+}
+function setN(n){
+  n=Math.max(2,Math.min(20,Math.round(n)||2));const f=F();
+  while(S.matches.length<n)S.matches.push(blankM(S.matches.length+1));
+  S.matches.length=n;f.n=n;f.min=Math.min(f.min,n);
+}
+$('f-preset').addEventListener('change',e=>{
+  const v=e.target.value;
+  if(v==='quiniela'){S.fmt=clone(QFMT);setN(14);S.params.price=.75}
+  else{F().preset='custom';F().pleno=false}
+  picks=[];save();renderBoard();renderPicks();toast(T('tFormat'));
+});
+$('f-n').addEventListener('change',e=>{setN(+e.target.value);picks=[];save();renderBoard();renderPicks();toast(T('tFormat'))});
+$('f-cur').addEventListener('change',e=>{F().cur=e.target.value;save();renderBoard()});
+$('f-min').addEventListener('change',e=>{F().min=Math.max(1,Math.min(F().n,Math.round(+e.target.value)||1));save();renderBoard()});
+$('p-price').addEventListener('change',renderFmt);
+function relabel(st){
+  const re=(s,a,b)=>{const m=String(s).match(new RegExp('^(?:'+a+')( \\d+)?$'));return m?b+(m[1]||''):s};
+  st.matches.concat([st.pleno]).forEach(m=>{m.h=re(m.h,'Local|Home',T('home'));m.a=re(m.a,'Visitante|Away',T('away'))});
+  if(st.name==='Nueva jornada'||st.name==='New round')st.name=T('newRound');
+  if(st.demo){st.name=T('demoName');st.stamp=T('demoStamp')}
+}
+function applyLang(){
+  const d=document;d.documentElement.lang=LANG;d.title=T('title');
+  const md=d.querySelector('meta[name="description"]');if(md)md.content=T('desc');
+  const cn=$('canon');if(cn){let q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}cn.href='https://qlab-web.pages.dev/'+(LANGS.includes(q)?'?lang='+q:'')}
+  d.querySelectorAll('[data-t]').forEach(el=>{el.textContent=T(el.dataset.t)});
+  d.querySelectorAll('[data-th]').forEach(el=>{el.innerHTML=T(el.dataset.th)});
+  d.querySelectorAll('[data-ta]').forEach(el=>{el.setAttribute('aria-label',T(el.dataset.ta))});
+  d.querySelectorAll('.lang').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===LANG));
+}
+d0.querySelectorAll('.lang').forEach(b=>b.addEventListener('click',()=>{
+  LANG=b.dataset.lang;try{localStorage.setItem('qlab-lang',LANG)}catch(e){}
+  try{const u=new URL(location.href);if(u.searchParams.has('lang')){u.searchParams.set('lang',LANG);history.replaceState(null,'',u)}}catch(e){}
+  relabel(S);save();applyLang();allocMsg('');renderBoard();renderCalc();
+  if(window.QLNative){renderComps();renderEvents();renderPicks()}
+  const ev=$('evlist');if(!events.length&&ev)ev.innerHTML=`<p class="sub">${T('evHint')}</p>`;
+}));
+applyLang();relabel(S);
 initSync();
 
 renderBoard();
+renderCalc();
 })();
 </script>
 

@@ -61,5 +61,5 @@ function run(radices,k,ms,seed){
   let N=1;radices.forEach(r=>N*=r);if(k>=radices.length)return {cols:[0],ver:{ok:true,worst:radices.length,N}};
   const best=search(radices,k,ms,seed||7),ver=verify(radices,k,best);return {cols:best,ver};
 }
-if(typeof self!=='undefined'&&self.postMessage&&typeof window==='undefined'){self.onmessage=e=>{const {radices,k,ms}=e.data;try{self.postMessage({ok:true,...run(radices,k,ms)})}catch(err){self.postMessage({ok:false,error:String(err)})}}}
+if(typeof self!=='undefined'&&self.postMessage&&typeof window==='undefined'){self.onmessage=e=>{const {radices,k,ms,seed}=e.data;try{self.postMessage({ok:true,...run(radices,k,ms,seed)})}catch(err){self.postMessage({ok:false,error:String(err)})}}}
 if(typeof module!=='undefined')module.exports={run,verify,rwls};

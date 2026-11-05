@@ -18,6 +18,14 @@
 <h2>Lines table</h2>
 <p>Rows: triples. Columns: doubles.</p>
 <div class="tw"><table><thead><tr><th scope="col">T \ D</th><th scope="col">0</th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th><th scope="col">5</th><th scope="col">6</th></tr></thead><tbody><tr><th scope="row">0</th><td>1</td><td>2</td><td>4</td><td>8</td><td>16</td><td>32</td><td>64</td></tr><tr><th scope="row">1</th><td>3</td><td>6</td><td>12</td><td>24</td><td>48</td><td>96</td><td>192</td></tr><tr><th scope="row">2</th><td>9</td><td>18</td><td>36</td><td>72</td><td>144</td><td>288</td><td>576</td></tr><tr><th scope="row">3</th><td>27</td><td>54</td><td>108</td><td>216</td><td>432</td><td>864</td><td>1,728</td></tr><tr><th scope="row">4</th><td>81</td><td>162</td><td>324</td><td>648</td><td>1,296</td><td>2,592</td><td>5,184</td></tr></tbody></table></div>
+<section id="probabilities-model">
+<h2>Where the probabilities come from</h2>
+<p>If a match has odds, Quiniela Lab removes the bookmaker’s margin and uses that implied probability to estimate each sign (1X2). You can change the odds weight in the settings.</p>
+<p>If you also enter the teams’ goals, you’ll see a Dixon-Coles model as a reference. It’s a variant of the Poisson distribution that corrects low scores: with a negative ρ, 0-0 and 1-1 become more likely, and so does X. It takes into account each team’s attack and defence, the home factor and, if you enter it, the value of the starting XIs.</p>
+<h2>What it can and can’t tell you</h2>
+<p>These figures are estimates, not certainties. They help you decide where to spend your doubles and triples within your budget, for example on the closest matches. No match is a sure thing, and a higher chance of getting matches right doesn’t mean a higher expected prize.</p>
+<p>In our test of 90 European matches, bookmakers’ favourites won 62% of the time and the model’s 53%. That’s why, by default, odds take priority when they’re available.</p>
+</section>
 <h2>Place them where they matter</h2>
 <p>The table shows what a combination costs, not where to put it. <a href="/?lang=en">Quiniela Lab</a> lets you set a budget and see an allocation based on odds-implied probabilities. A higher chance of getting matches right doesn’t mean a higher expected prize.</p>
 <p><a class="cta" href="/?lang=en">Open Quiniela Lab</a></p>

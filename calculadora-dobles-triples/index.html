@@ -18,6 +18,14 @@
 <h2>Tabla de apuestas</h2>
 <p>Filas: triples. Columnas: dobles.</p>
 <div class="tw"><table><thead><tr><th scope="col">T \ D</th><th scope="col">0</th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th><th scope="col">5</th><th scope="col">6</th></tr></thead><tbody><tr><th scope="row">0</th><td>1</td><td>2</td><td>4</td><td>8</td><td>16</td><td>32</td><td>64</td></tr><tr><th scope="row">1</th><td>3</td><td>6</td><td>12</td><td>24</td><td>48</td><td>96</td><td>192</td></tr><tr><th scope="row">2</th><td>9</td><td>18</td><td>36</td><td>72</td><td>144</td><td>288</td><td>576</td></tr><tr><th scope="row">3</th><td>27</td><td>54</td><td>108</td><td>216</td><td>432</td><td>864</td><td>1.728</td></tr><tr><th scope="row">4</th><td>81</td><td>162</td><td>324</td><td>648</td><td>1.296</td><td>2.592</td><td>5.184</td></tr></tbody></table></div>
+<section id="probabilidades-modelo">
+<h2>De dónde salen las probabilidades</h2>
+<p>Si un partido tiene cuotas, Quiniela Lab les quita el margen de la casa y usa esa probabilidad implícita para estimar cada signo (1X2). Puedes cambiar el peso de las cuotas en los parámetros.</p>
+<p>Si además escribes los goles de los equipos, verás también un modelo Dixon-Coles como referencia. Es una variante de la distribución de Poisson que corrige los marcadores bajos: con ρ negativo suben el 0-0 y el 1-1, y con ello la X. Tiene en cuenta el ataque y la defensa de cada equipo, el factor campo y, si lo escribes, el valor de los onces.</p>
+<h2>Qué puede y qué no puede decirte</h2>
+<p>Estas cifras son estimaciones, no certezas. Ayudan a decidir dónde gastar tus dobles y triples dentro de tu presupuesto, por ejemplo en los partidos más igualados. Ningún partido es seguro y más probabilidad de acertar no significa más premio esperado.</p>
+<p>En nuestra prueba con 90 partidos europeos, las casas acertaron el favorito el 62 % de las veces y el modelo, el 53 %. Por eso, por defecto, mandan las cuotas cuando están disponibles.</p>
+</section>
 <h2>Dónde colocar los dobles y triples</h2>
 <p>La tabla dice cuánto cuesta una combinación, pero no dónde colocarla. En <a href="/">Quiniela Lab</a> puedes indicar un presupuesto y ver un reparto según la probabilidad que implican las cuotas. Más probabilidad de acertar no significa más premio esperado.</p>
 <p><a class="cta" href="/">Abrir Quiniela Lab</a></p>
